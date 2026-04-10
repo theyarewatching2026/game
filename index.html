@@ -476,6 +476,7 @@
   <div id="rotateBlock">
   <div class="rotate-text">請將手機橫向觀看</div>
 </div>
+
   <div id="bgLayer"></div>
   <div id="bgOverlay"></div>
 
@@ -493,6 +494,7 @@
           <button class="btn" id="clearAllFromSelect">清除全部紀錄</button>
         </div>
       </div>
+      <div style="height: 120vh;"></div>
     </section>
 
     <!-- 主頁 -->
@@ -604,7 +606,11 @@
 
 window.addEventListener("resize", checkOrientation);
 window.addEventListener("orientationchange", checkOrientation);
-
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    window.scrollTo(0, 1);
+  }, 300);
+});
 checkOrientation();
     function getCharacterKeys() {
       return Object.keys(CHARACTERS);
