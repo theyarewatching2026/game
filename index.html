@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>角色集點系統</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+ 	 margin: 0;
+	  font-family: "Noto Sans TC", Arial, sans-serif;
+
+	 background: url("image/喀喀.gif") no-repeat center center fixed;
+ 	 background-size: cover;
+
+ 	 color: #fff;
+ 	 height: 100vh;
+ 	 overflow: hidden;
+    }
+
+    .container {
+  	width: 100vw;
+  	height: 100vh;
+ 	 padding: 20px;
+	}
+
+    .card {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 24px;
+      padding: 24px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.25);
+    }
+
+    .title {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 800;
+      margin: 0 0 10px;
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      color: rgba(255,255,255,0.78);
+      margin: 0 0 24px;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .characters {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    @media (max-width: 760px) {
+      .characters {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .char-btn {
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 22px;
+      background: rgba(255,255,255,0.04);
+      color: white;
+      padding: 20px 16px;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+      min-height: 160px;
+    }
+
+    .char-btn:hover {
+      transform: translateY(-3px);
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.24);
+    }
+
+    .char-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      margin: 0 auto 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      font-weight: 700;
+    }
+
+    .ember { background: linear-gradient(135deg, #fb923c, #ef4444); }
+    .aqua  { background: linear-gradient(135deg, #22d3ee, #3b82f6); }
+    .nova  { background: linear-gradient(135deg, #a78bfa, #d946ef); }
+
+    .char-name {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .char-desc {
+      font-size: 14px;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.6;
+    }
+
+    .status-box {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(34,211,238,0.10);
+      border: 1px solid rgba(34,211,238,0.18);
+      color: #c9f9ff;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .main-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  height: 100%;
+}
+
+    @media (max-width: 860px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hero-area {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .avatar-wrap {
+      width: 140px;
+      height: 140px;
+      border-radius: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 58px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.35);
+    }
+
+    .avatar-label {
+      margin-top: 18px;
+      font-size: 30px;
+      font-weight: 800;
+    }
+
+    .avatar-sub {
+      margin-top: 8px;
+      color: rgba(255,255,255,0.75);
+      font-size: 15px;
+      text-align: center;
+      line-height: 1.7;
+      max-width: 420px;
+    }
+
+    .dots {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.14);
+      transition: transform 0.25s ease, background 0.25s ease;
+    }
+
+    .dot.active {
+      background: #fff;
+      transform: scale(1.15);
+    }
+
+    .result-text {
+      margin-top: 18px;
+      font-size: 18px;
+      font-weight: 700;
+      min-height: 28px;
+    }
+
+    .info-panel h3 {
+      margin: 0 0 16px;
+      font-size: 22px;
+    }
+
+    .info-item {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 12px;
+      line-height: 1.7;
+      font-size: 14px;
+      color: rgba(255,255,255,0.82);
+    }
+
+    .progress-list {
+      margin-top: 18px;
+    }
+
+    .progress-item {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 12px;
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+
+    .progress-name {
+      font-weight: 700;
+    }
+
+    .bar {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.10);
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transition: width 0.35s ease;
+    }
+
+    .fill-ember { background: linear-gradient(90deg, #fb923c, #ef4444); }
+    .fill-aqua  { background: linear-gradient(90deg, #22d3ee, #3b82f6); }
+    .fill-nova  { background: linear-gradient(90deg, #a78bfa, #d946ef); }
+
+    .small {
+      font-size: 13px;
+      color: rgba(255,255,255,0.64);
+    }
+
+    .actions {
+      margin-top: 18px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: white;
+      padding: 11px 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn:hover {
+      background: rgba(255,255,255,0.10);
+    }
+
+    /* 動畫 */
+    .animate-ember {
+      animation: emberBurst 1.15s ease forwards;
+    }
+
+    .animate-aqua {
+      animation: aquaDrop 1.15s ease forwards;
+    }
+
+    .animate-nova {
+      animation: novaSpin 1.15s ease forwards;
+    }
+
+    @keyframes emberBurst {
+      0%   { transform: scale(0.45) rotate(-14deg); opacity: 0; filter: blur(6px); }
+      35%  { transform: scale(1.16) rotate(8deg); opacity: 1; filter: blur(0); }
+      55%  { transform: scale(0.97) rotate(-4deg); }
+      75%  { transform: scale(1.05) rotate(2deg); }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+
+    @keyframes aquaDrop {
+      0%   { transform: translateY(-120px) scaleY(1.4); opacity: 0; filter: blur(6px); }
+      35%  { transform: translateY(18px) scaleY(0.84); opacity: 1; filter: blur(0); }
+      52%  { transform: translateY(-10px) scaleY(1.06); }
+      72%  { transform: translateY(4px) scaleY(0.97); }
+      100% { transform: translateY(0) scaleY(1); opacity: 1; }
+    }
+
+    @keyframes novaSpin {
+      0%   { transform: scale(0.15) rotate(180deg); opacity: 0; filter: blur(8px); }
+      45%  { transform: scale(1.08) rotate(-10deg); opacity: 1; filter: blur(0); }
+      70%  { transform: scale(0.96) rotate(6deg); }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+
+    .flash {
+      animation: flashText 0.6s ease;
+    }
+
+    @keyframes flashText {
+      0%   { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 選角頁 -->
+    <section id="selectSection" class="card hidden">
+      <h1 class="title center">請先選擇角色</h1>
+      <p class="subtitle center">
+        這是這支手機的唯一角色設定。<br>
+        第一次進來不播動畫、不加點；選完後，之後每次再掃同一個 QR code 才會播放動畫並集點。
+      </p>
+
+      <div class="characters">
+        <button class="char-btn" data-char="ember">
+          <div class="char-icon ember">🔥</div>
+          <div class="char-name">Ember</div>
+          <div class="char-desc">火焰角色。之後掃碼時會播放爆發感動畫。</div>
+        </button>
+
+        <button class="char-btn" data-char="aqua">
+          <div class="char-icon aqua">💧</div>
+          <div class="char-name">Aqua</div>
+          <div class="char-desc">水滴角色。之後掃碼時會播放落下與回彈動畫。</div>
+        </button>
+
+        <button class="char-btn" data-char="nova">
+          <div class="char-icon nova">✨</div>
+          <div class="char-name">Nova</div>
+          <div class="char-desc">星光角色。之後掃碼時會播放旋轉閃現動畫。</div>
+        </button>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="clearAllFromSelect">清除全部紀錄</button>
+      </div>
+    </section>
+
+    <!-- 主頁 / 掃碼後集點頁 -->
+    <section id="mainSection" class="hidden">
+      <div class="main-grid">
+        <div class="card">
+          <div class="hero-area">
+            <div id="avatar" class="avatar-wrap"></div>
+            <div id="avatarLabel" class="avatar-label"></div>
+            <div id="avatarSub" class="avatar-sub"></div>
+
+            <div class="dots" id="dots"></div>
+
+            <div class="result-text" id="resultText"></div>
+          </div>
+        </div>
+
+        <div class="card info-panel">
+          <h3>目前狀態</h3>
+
+          <div class="info-item" id="phoneRoleBox"></div>
+          <div class="info-item" id="scanStateBox"></div>
+          <div class="info-item small">
+            這個系統預設以網址 <b>?scan=1</b> 當作一次掃碼事件。<br>
+            也就是說，你的 QR code 請指向：<br>
+            <b>index.html?scan=1</b>
+          </div>
+
+          <div class="progress-list">
+            <div class="progress-item">
+              <div class="progress-top">
+                <div class="progress-name">Ember</div>
+                <div id="scoreEmber">0 / 3</div>
+              </div>
+              <div class="bar">
+                <div id="barEmber" class="bar-fill fill-ember"></div>
+              </div>
+            </div>
+
+            <div class="progress-item">
+              <div class="progress-top">
+                <div class="progress-name">Aqua</div>
+                <div id="scoreAqua">0 / 3</div>
+              </div>
+              <div class="bar">
+                <div id="barAqua" class="bar-fill fill-aqua"></div>
+              </div>
+            </div>
+
+            <div class="progress-item">
+              <div class="progress-top">
+                <div class="progress-name">Nova</div>
+                <div id="scoreNova">0 / 3</div>
+              </div>
+              <div class="bar">
+                <div id="barNova" class="bar-fill fill-nova"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn" id="resetCurrentBtn">重置本角色點數</button>
+            <button class="btn" id="reselectBtn">重新選角色</button>
+            <button class="btn" id="clearAllBtn">清除全部紀錄</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "qr-character-game-v1";
+    const MAX_POINTS = 3;
+    const COOLDOWN_MS = 3000;
+
+    // 集滿後跳轉網址，改成你的下一頁
+    const NEXT_URL = "https://example.com/next-page";
+
+    const CHARACTERS = {
+      ember: {
+        name: "Ember",
+        icon: "🔥",
+        desc: "火焰角色，掃碼時會先播放爆發動畫，再加點。",
+        className: "ember",
+        animClass: "animate-ember"
+      },
+      aqua: {
+        name: "Aqua",
+        icon: "💧",
+        desc: "水滴角色，掃碼時會先播放落下動畫，再加點。",
+        className: "aqua",
+        animClass: "animate-aqua"
+      },
+      nova: {
+        name: "Nova",
+        icon: "✨",
+        desc: "星光角色，掃碼時會先播放旋轉動畫，再加點。",
+        className: "nova",
+        animClass: "animate-nova"
+      }
+    };
+
+    function getDefaultData() {
+      return {
+        selectedCharacter: null,
+        scores: {
+          ember: 0,
+          aqua: 0,
+          nova: 0
+        },
+        lastScanTime: 0
+      };
+    }
+
+    function loadData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return getDefaultData();
+        const parsed = JSON.parse(raw);
+
+        return {
+          selectedCharacter: parsed.selectedCharacter || null,
+          scores: {
+            ember: Number(parsed?.scores?.ember) || 0,
+            aqua: Number(parsed?.scores?.aqua) || 0,
+            nova: Number(parsed?.scores?.nova) || 0
+          },
+          lastScanTime: Number(parsed.lastScanTime) || 0
+        };
+      } catch (e) {
+        return getDefaultData();
+      }
+    }
+
+    function saveData(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function clearData() {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+
+    function getIsScanEvent() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("scan") === "1";
+    }
+
+    function updateProgressUI(data) {
+      document.getElementById("scoreEmber").textContent = `${data.scores.ember} / ${MAX_POINTS}`;
+      document.getElementById("scoreAqua").textContent = `${data.scores.aqua} / ${MAX_POINTS}`;
+      document.getElementById("scoreNova").textContent = `${data.scores.nova} / ${MAX_POINTS}`;
+
+      document.getElementById("barEmber").style.width = `${(data.scores.ember / MAX_POINTS) * 100}%`;
+      document.getElementById("barAqua").style.width = `${(data.scores.aqua / MAX_POINTS) * 100}%`;
+      document.getElementById("barNova").style.width = `${(data.scores.nova / MAX_POINTS) * 100}%`;
+    }
+
+    function renderDots(score) {
+      const dots = document.getElementById("dots");
+      dots.innerHTML = "";
+      for (let i = 0; i < MAX_POINTS; i++) {
+        const el = document.createElement("div");
+        el.className = "dot" + (i < score ? " active" : "");
+        dots.appendChild(el);
+      }
+    }
+
+    function renderCharacterView(data, message = "", scanMessage = "") {
+      const selected = data.selectedCharacter;
+      const char = CHARACTERS[selected];
+      const score = data.scores[selected];
+
+      const avatar = document.getElementById("avatar");
+      avatar.className = `avatar-wrap ${char.className}`;
+      avatar.textContent = char.icon;
+
+      document.getElementById("avatarLabel").textContent = char.name;
+      document.getElementById("avatarSub").textContent = char.desc;
+      document.getElementById("resultText").textContent = message;
+      document.getElementById("resultText").classList.remove("flash");
+      void document.getElementById("resultText").offsetWidth;
+      if (message) document.getElementById("resultText").classList.add("flash");
+
+      document.getElementById("phoneRoleBox").innerHTML =
+        `本手機目前代表角色：<b>${char.name}</b><br>目前點數：<b>${score} / ${MAX_POINTS}</b>`;
+
+      document.getElementById("scanStateBox").innerHTML =
+        scanMessage || "等待下一次掃碼事件。";
+
+      renderDots(score);
+      updateProgressUI(data);
+    }
+
+    function showSelectSection() {
+      document.getElementById("selectSection").classList.remove("hidden");
+      document.getElementById("mainSection").classList.add("hidden");
+    }
+
+    function showMainSection() {
+      document.getElementById("selectSection").classList.add("hidden");
+      document.getElementById("mainSection").classList.remove("hidden");
+    }
+
+    function selectCharacter(characterKey) {
+      const data = loadData();
+      data.selectedCharacter = characterKey;
+      saveData(data);
+      showMainSection();
+      renderCharacterView(
+        data,
+        `已選擇 ${CHARACTERS[characterKey].name}`,
+        "角色已綁定。下次再掃同一個 QR code，才會播放動畫並加點。"
+      );
+    }
+
+    function wait(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function playAnimationAndAddPoint() {
+      const data = loadData();
+      const selected = data.selectedCharacter;
+      const char = CHARACTERS[selected];
+      const now = Date.now();
+      const avatar = document.getElementById("avatar");
+
+      showMainSection();
+
+      if (!selected) {
+        showSelectSection();
+        return;
+      }
+
+      renderCharacterView(
+        data,
+        "",
+        "已偵測到掃碼事件，準備播放動畫..."
+      );
+
+      if (data.scores[selected] >= MAX_POINTS) {
+        renderCharacterView(
+          data,
+          `已完成 ${MAX_POINTS} / ${MAX_POINTS}`,
+          "已經集滿點數，將直接跳轉。"
+        );
+        await wait(1200);
+        window.location.href = NEXT_URL;
+        return;
+      }
+
+      if (now - data.lastScanTime < COOLDOWN_MS) {
+        const remain = Math.ceil((COOLDOWN_MS - (now - data.lastScanTime)) / 1000);
+        renderCharacterView(
+          data,
+          `冷卻中，請 ${remain} 秒後再掃`,
+          "為避免重複加點，系統暫時不加點。"
+        );
+        return;
+      }
+
+      avatar.classList.remove("animate-ember", "animate-aqua", "animate-nova");
+      void avatar.offsetWidth;
+      avatar.classList.add(char.animClass);
+
+      renderCharacterView(
+        data,
+        "播放角色動畫中...",
+        `已辨識角色：${char.name}，動畫結束後將加 1 點。`
+      );
+
+      await wait(1200);
+
+      data.scores[selected] = Math.min(data.scores[selected] + 1, MAX_POINTS);
+      data.lastScanTime = now;
+      saveData(data);
+
+      const updatedScore = data.scores[selected];
+      renderCharacterView(
+        data,
+        `+1 點！目前 ${updatedScore} / ${MAX_POINTS}`,
+        "本次掃碼已成功加點。"
+      );
+
+      if (updatedScore >= MAX_POINTS) {
+        await wait(1400);
+        renderCharacterView(
+          data,
+          "已集滿 3 點，準備跳轉...",
+          "完成條件已達成，即將前往下一頁。"
+        );
+        await wait(1200);
+        window.location.href = NEXT_URL;
+      }
+    }
+
+    function renderNormalMain() {
+      const data = loadData();
+      if (!data.selectedCharacter) {
+        showSelectSection();
+        return;
+      }
+      showMainSection();
+      renderCharacterView(
+        data,
+        "",
+        "這次不是掃碼事件，因此只顯示目前狀態。"
+      );
+    }
+
+    function resetCurrentCharacterPoints() {
+      const data = loadData();
+      if (!data.selectedCharacter) return;
+      data.scores[data.selectedCharacter] = 0;
+      saveData(data);
+      renderNormalMain();
+    }
+
+    function reselectCharacter() {
+      const data = loadData();
+      data.selectedCharacter = null;
+      saveData(data);
+      showSelectSection();
+    }
+
+    function init() {
+      const data = loadData();
+      const isScanEvent = getIsScanEvent();
+
+      document.querySelectorAll(".char-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const key = btn.getAttribute("data-char");
+          selectCharacter(key);
+        });
+      });
+
+      document.getElementById("resetCurrentBtn").addEventListener("click", resetCurrentCharacterPoints);
+      document.getElementById("reselectBtn").addEventListener("click", reselectCharacter);
+      document.getElementById("clearAllBtn").addEventListener("click", () => {
+        clearData();
+        location.reload();
+      });
+      document.getElementById("clearAllFromSelect").addEventListener("click", () => {
+        clearData();
+        location.reload();
+      });
+
+      updateProgressUI(data);
+
+      if (!data.selectedCharacter) {
+        showSelectSection();
+        return;
+      }
+
+      if (isScanEvent) {
+        playAnimationAndAddPoint();
+      } else {
+        renderNormalMain();
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
