@@ -707,6 +707,7 @@ checkOrientation();
 
     function buildProgressList(data) {
       const list = document.getElementById("progressList");
+      if (!list) return
       list.innerHTML = "";
 
       getCharacterKeys().forEach(key => {
