@@ -25,165 +25,131 @@
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
       font-family: "Cubic11", "Noto Sans TC", Arial, sans-serif;
       color: #fff;
       overflow-x: hidden;
       background: #000;
     }
 
-    body { min-height: 100dvh; display: flex; flex-direction: column; }
-
-    /* 背景層保持固定 */
+    /* 背景層：控制切換 */
     #bgLayer {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background-image: url("./主背景.png");
       background-size: cover;
       background-position: center;
       z-index: 0;
-      transition: background-image 0.5s ease;
+      transition: background-image 0.6s ease;
     }
 
     #bgOverlay {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.8));
-      z-index: 1;
-      pointer-events: none;
+      position: fixed; inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.7) 60%, rgba(0,0,0,0.9));
+      z-index: 1; pointer-events: none;
     }
 
     .app {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
+      position: relative; z-index: 2;
+      width: 100%; min-height: 100dvh;
+      display: flex; flex-direction: column;
       padding: 10px;
     }
 
-    .screen {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      display: none;
-      animation: fadeIn 0.5s ease;
-    }
-
-    .screen.active { display: flex; flex-direction: column; gap: 15px; }
+    .screen { width: 100%; max-width: 1300px; margin: 0 auto; display: none; }
+    .screen.active { display: flex; flex-direction: column; animation: fadeIn 0.5s ease; }
 
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     .panel {
-      background: rgba(45, 36, 76, 0.8);
+      background: rgba(30, 24, 52, 0.75);
       backdrop-filter: blur(15px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 15px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      border: 1px solid rgba(160, 106, 140, 0.2);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6);
     }
 
-    /* 選角頁面旋轉木馬優化 */
+    /* 選角頁面旋轉木馬 */
     .select-wrap { text-align: center; }
     .select-grid {
-      display: flex;
-      overflow-x: auto;
-      gap: 15px;
-      padding: 20px 10%;
+      display: flex; overflow-x: auto; gap: 15px;
+      padding: 30px 15%;
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
     }
     .select-grid::-webkit-scrollbar { display: none; }
 
     .char-card {
-      flex: 0 0 240px;
-      scroll-snap-align: center;
-      transition: all 0.3s ease;
-      opacity: 0.6;
-      transform: scale(0.9);
-      cursor: pointer;
+      flex: 0 0 260px; scroll-snap-align: center;
+      transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+      opacity: 0.4; transform: scale(0.85); cursor: pointer;
+      text-align: center;
     }
     .char-card.is-center { opacity: 1; transform: scale(1.05); border-color: var(--rose); }
 
-    /* 主頁面佈局：手機直向堆疊，橫向並排 */
-    .main-wrap {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 15px;
-      width: 100%;
+    .char-badge {
+      width: 60px; height: 60px; margin: 0 auto 15px;
+      border-radius: 18px; display: flex; align-items: center; justify-content: center;
+      font-size: 30px; background: rgba(255,255,255,0.1);
     }
 
-    @media (min-width: 900px) {
-      .main-wrap { grid-template-columns: 1.2fr 0.8fr; }
+    /* 主頁佈局 */
+    .main-wrap { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; }
+    @media (min-width: 950px) {
+      .main-wrap { grid-template-columns: 1.3fr 0.7fr; height: 80dvh; }
     }
 
     .hero-panel {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      min-height: 350px;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
+
+    /* 原創特效：雷達與掃描線 */
+    .scanlines { position: absolute; inset: 0; background: repeating-linear-gradient(180deg, rgba(255,255,255,0.03) 0px, transparent 2px); pointer-events: none; }
+    .alert-ring {
+      position: absolute; width: 300px; height: 300px;
+      border: 1px solid rgba(160, 106, 140, 0.2); border-radius: 50%;
+      animation: radarPulse 4s infinite;
+    }
+    @keyframes radarPulse { 0% { transform: scale(0.8); opacity: 0; } 50% { opacity: 0.5; } 100% { transform: scale(1.5); opacity: 0; } }
 
     .avatar-wrap {
-      width: 120px;
-      height: 120px;
-      font-size: 50px;
-      background: var(--violet);
-      border-radius: 30%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 15px;
-      box-shadow: 0 0 20px var(--rose);
+      width: 140px; height: 140px; font-size: 60px;
+      border-radius: 30px; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px; z-index: 3;
+      box-shadow: 0 0 30px rgba(160, 106, 140, 0.4);
+      transition: transform 0.3s ease;
     }
 
-    .telemetry-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      width: 100%;
-      margin-top: 15px;
-    }
+    /* 點數回饋動畫 */
+    .point-burst { animation: burst 0.6s ease; }
+    @keyframes burst { 0% { transform: scale(1); } 50% { transform: scale(1.2); filter: brightness(1.5); } 100% { transform: scale(1); } }
 
-    .telemetry-card {
-      background: rgba(255,255,255,0.05);
-      padding: 10px;
-      border-radius: 12px;
-      font-size: 12px;
-    }
+    /* 資訊卡片 */
+    .telemetry-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; max-width: 400px; margin-top: 15px; }
+    .telemetry-card { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 14px; font-size: 11px; text-transform: uppercase; }
+    .telemetry-card strong { display: block; font-size: 18px; color: var(--rose-soft); }
 
-    .progress-list { display: flex; flex-direction: column; gap: 10px; }
-    .bar { height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; }
-    .bar-fill { height: 100%; transition: width 0.5s ease; }
+    .progress-item { margin-bottom: 15px; }
+    .bar { height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; margin-top: 8px; }
+    .bar-fill { height: 100%; transition: width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
 
     .btn {
-      background: var(--rose);
-      border: none;
-      color: white;
-      padding: 12px;
-      border-radius: 12px;
-      font-weight: bold;
-      cursor: pointer;
-      width: 100%;
+      background: rgba(239, 232, 221, 0.1); border: 1px solid rgba(255,255,255,0.1);
+      color: white; padding: 14px; border-radius: 14px; font-weight: bold;
+      cursor: pointer; width: 100%; transition: 0.2s;
     }
-    .btn.danger { background: #7e3240; }
+    .btn:active { transform: scale(0.95); }
+    .btn.danger { background: rgba(160, 106, 140, 0.3); border-color: var(--rose); }
 
-    /* 隱藏旋轉提示，除非你真的想強制 */
-    #rotateBlock {
-      display: none;
-      position: fixed; inset: 0; background: #000; z-index: 9999;
-      flex-direction: column; align-items: center; justify-content: center;
-    }
+    .dot { width: 14px; height: 14px; border-radius: 50%; background: rgba(255,255,255,0.1); transition: 0.3s; }
+    .dot.active { background: var(--rose); box-shadow: 0 0 12px var(--rose); }
 
+    /* 響應式微調 */
     @media (max-width: 600px) {
-      .game-title { font-size: 20px; }
-      .char-card { flex: 0 0 200px; }
+      .avatar-wrap { width: 100px; height: 100px; font-size: 40px; }
+      .char-card { flex: 0 0 220px; }
     }
   </style>
 </head>
@@ -194,34 +160,43 @@
   <div class="app">
     <section id="selectScreen" class="screen active">
       <div class="panel select-wrap">
-        <h1 class="game-title">請選擇觀測角色</h1>
+        <h1 style="letter-spacing: 2px;">請選擇觀測角色</h1>
+        <p style="font-size: 12px; color: var(--rose-soft);">左右滑動切換</p>
         <div class="select-grid" id="selectGrid"></div>
-        <button class="btn danger" id="clearAllFromSelect" style="margin-top:20px; max-width:200px">清除紀錄</button>
+        <button class="btn danger" id="clearAllFromSelect" style="max-width: 200px; margin: 0 auto;">清除所有紀錄</button>
       </div>
     </section>
 
     <section id="mainScreen" class="screen">
       <div class="main-wrap">
         <div class="panel hero-panel">
+          <div class="scanlines"></div>
+          <div class="alert-ring"></div>
+          
           <div id="avatar" class="avatar-wrap"></div>
-          <h2 id="avatarTitle" style="margin:5px 0"></h2>
-          <p id="avatarName" style="color:var(--rose-soft); margin:0"></p>
-          <p id="avatarSub" style="font-size:13px; opacity:0.8; max-width:300px"></p>
+          <h2 id="avatarTitle" style="margin: 0; font-size: 28px;"></h2>
+          <p id="avatarName" style="color: var(--rose-soft); margin: 5px 0; letter-spacing: 2px;"></p>
+          <p id="avatarSub" style="font-size: 13px; opacity: 0.7; max-width: 320px; line-height: 1.6;"></p>
           
           <div class="telemetry-grid">
-            <div class="telemetry-card">Archive: <strong id="telemetrySignal">--</strong></div>
-            <div class="telemetry-card">State: <strong id="telemetryThreat">--</strong></div>
+            <div class="telemetry-card">Archive Rate <strong id="telemetrySignal">--</strong></div>
+            <div class="telemetry-card">Lock State <strong id="telemetryThreat">--</strong></div>
           </div>
-          <div class="dots" id="dots" style="display:flex; gap:8px; margin-top:15px"></div>
-          <div id="resultText" style="margin-top:10px; font-weight:bold; color:var(--teal)"></div>
+
+          <div id="dots" style="display: flex; gap: 10px; margin-top: 20px;"></div>
+          <div id="resultText" style="margin-top: 15px; font-size: 14px; color: var(--teal); height: 20px;"></div>
         </div>
 
-        <div class="panel side-panel">
-          <h3>觀測進度</h3>
-          <div id="progressList"></div>
-          <div style="display:flex; flex-direction:column; gap:8px; margin-top:20px">
-            <button class="btn" id="reselectBtn">更換角色</button>
-            <button class="btn danger" id="resetCurrentBtn">重置進度</button>
+        <div class="panel side-panel" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <h3 style="margin-top: 0; border-left: 4px solid var(--rose); padding-left: 10px;">觀測紀錄</h3>
+            <div id="progressList"></div>
+            <p style="font-size: 11px; opacity: 0.5; margin-top: 10px;">* 同一角色累計 3 次觀測後，將開啟下一段紀錄。</p>
+          </div>
+          
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+            <button class="btn" id="reselectBtn">重新選擇角色</button>
+            <button class="btn danger" id="resetCurrentBtn">重置本角色點數</button>
           </div>
         </div>
       </div>
@@ -229,25 +204,28 @@
   </div>
 
   <script>
-    // 這裡保留你原本的 CHARACTERS 資料與邏輯
     const STORAGE_KEY = "they-are-watching-v2";
     const MAX_POINTS = 3;
     const WAITING_MS = 3000;
     const NEXT_URL = "https://example.com/next-page";
 
     const CHARACTERS = {
-      char1: { title: "失焦者", name: "13號", icon: "◉", desc: "失焦於籠舍與視線之間", themeClass: "theme-1", fillClass: "fill-1", animClass: "animate-1", bg: "#2d244c" },
-      char2: { title: "斷喙者", name: "喀喀", icon: "✦", desc: "帶著斷裂記憶與摩擦聲響", themeClass: "theme-2", fillClass: "fill-2", animClass: "animate-2", bg: "#7e3240" },
-      char3: { title: "編碼觀測者", name: "C-98", icon: "▣", desc: "以監測與記錄為本能", themeClass: "theme-3", fillClass: "fill-3", animClass: "animate-3", bg: "#2d5163" },
-      char4: { title: "羽封者", name: "小白", icon: "◌", desc: "羽色被馴化，動作卻仍保留微弱的浮升感", themeClass: "theme-4", fillClass: "fill-4", animClass: "animate-4", bg: "#9e8f85" },
-      char5: { title: "孵夢者", name: "殼裡裡", icon: "◍", desc: "停留在殼與夢的邊界", themeClass: "theme-5", fillClass: "fill-5", animClass: "animate-5", bg: "#8d6e9d" },
-      char6: { title: "啼鳴零號", name: "NONE", icon: "◎", desc: "最初與最末的呼鳴殘響", themeClass: "theme-6", fillClass: "fill-6", animClass: "animate-6", bg: "#201738" }
+      char1: { title: "失焦者", name: "13號", icon: "◉", desc: "失焦於籠舍與視線之間", fillClass: "fill-1", bg: "./NO.13&零號.gif" },
+      char2: { title: "斷喙者", name: "喀喀", icon: "✦", desc: "帶著斷裂記憶與摩擦聲響", fillClass: "fill-2", bg: "./喀喀.gif" },
+      char3: { title: "編碼觀測者", name: "C-98", icon: "▣", desc: "以監測與記錄為本能", fillClass: "fill-3", bg: "./小白&c-98.gif" },
+      char4: { title: "羽封者", name: "小白", icon: "◌", desc: "羽色被馴化，動作卻仍保留微弱的浮升感", fillClass: "fill-4", bg: "./小白&c-98.gif" },
+      char5: { title: "孵夢者", name: "殼裡裡", icon: "◍", desc: "停留在殼與夢的邊界", fillClass: "fill-5", bg: "./殼裡裡.gif" },
+      char6: { title: "啼鳴零號", name: "", icon: "◎", desc: "最初與最末的呼鳴殘響", fillClass: "fill-6", bg: "./NO.13&零號.gif" }
     };
 
-    // 核心資料存取
     let userData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { selectedCharacter: null, scores: {}, lastScanTime: 0 };
 
     function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(userData)); }
+
+    function updateBackground(bgPath) {
+      const bgLayer = document.getElementById("bgLayer");
+      bgLayer.style.backgroundImage = bgPath ? `url("${bgPath}")` : 'url("./主背景.png")';
+    }
 
     function buildSelectCards() {
       const grid = document.getElementById("selectGrid");
@@ -256,31 +234,29 @@
         const char = CHARACTERS[key];
         const card = document.createElement("div");
         card.className = "panel char-card";
-        card.innerHTML = `<div style="font-size:40px">${char.icon}</div><h3>${char.title}</h3><p>${char.name}</p>`;
+        card.innerHTML = `
+          <div class="char-badge">${char.icon}</div>
+          <div style="font-weight:bold; font-size:18px;">${char.title}</div>
+          <div style="font-size:12px; opacity:0.7;">${char.name}</div>
+        `;
         card.onclick = () => selectCharacter(key);
         grid.appendChild(card);
       });
-      updateCarousel();
+      setTimeout(updateCarousel, 100);
     }
 
     function updateCarousel() {
-      const cards = document.querySelectorAll('.char-card');
       const container = document.getElementById('selectGrid');
+      const cards = document.querySelectorAll('.char-card');
       const center = container.scrollLeft + container.offsetWidth / 2;
-      
       cards.forEach(card => {
         const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-        if (Math.abs(cardCenter - center) < 100) {
-          card.classList.add('is-center');
-        } else {
-          card.classList.remove('is-center');
-        }
+        card.classList.toggle('is-center', Math.abs(cardCenter - center) < 100);
       });
     }
+    document.getElementById('selectGrid').onscroll = updateCarousel;
 
-    document.getElementById('selectGrid').addEventListener('scroll', updateCarousel);
-
-    async function selectCharacter(key) {
+    function selectCharacter(key) {
       userData.selectedCharacter = key;
       if (!userData.scores[key]) userData.scores[key] = 0;
       saveData();
@@ -289,54 +265,55 @@
 
     function renderMain() {
       if (!userData.selectedCharacter) {
-        document.getElementById("selectScreen").style.display = "flex";
-        document.getElementById("mainScreen").style.display = "none";
+        document.getElementById("selectScreen").classList.add("active");
+        document.getElementById("mainScreen").classList.remove("active");
+        updateBackground(null);
         buildSelectCards();
         return;
       }
 
-      document.getElementById("selectScreen").style.display = "none";
-      document.getElementById("mainScreen").style.display = "flex";
+      document.getElementById("selectScreen").classList.remove("active");
+      document.getElementById("mainScreen").classList.add("active");
 
       const char = CHARACTERS[userData.selectedCharacter];
       const score = userData.scores[userData.selectedCharacter] || 0;
+      updateBackground(char.bg);
 
       document.getElementById("avatar").textContent = char.icon;
       document.getElementById("avatarTitle").textContent = char.title;
       document.getElementById("avatarName").textContent = char.name;
       document.getElementById("avatarSub").textContent = char.desc;
-      document.getElementById("telemetrySignal").textContent = (score / MAX_POINTS * 100) + "%";
+      document.getElementById("telemetrySignal").textContent = Math.floor((score / MAX_POINTS) * 100) + "%";
       document.getElementById("telemetryThreat").textContent = score >= MAX_POINTS ? "UNLOCKED" : "LOCKED";
 
-      // 點點顯示
       const dots = document.getElementById("dots");
       dots.innerHTML = "";
       for(let i=0; i<MAX_POINTS; i++) {
         const dot = document.createElement("div");
-        dot.style.width = "12px"; dot.style.height = "12px"; dot.style.borderRadius = "50%";
-        dot.style.background = i < score ? "var(--rose)" : "rgba(255,255,255,0.2)";
+        dot.className = "dot" + (i < score ? " active" : "");
         dots.appendChild(dot);
       }
 
-      // 進度條
-      const prog = document.getElementById("progressList");
-      prog.innerHTML = `
-        <div style="margin-bottom:5px">觀測強度: ${score}/${MAX_POINTS}</div>
-        <div class="bar"><div class="bar-fill" style="width:${(score/MAX_POINTS)*100}%; background:var(--rose)"></div></div>
+      document.getElementById("progressList").innerHTML = `
+        <div class="progress-item">
+          <div style="display:flex; justify-content:space-between; font-size:13px;">
+            <span>${char.title}</span>
+            <span>${score} / ${MAX_POINTS}</span>
+          </div>
+          <div class="bar"><div class="bar-fill" style="width:${(score/MAX_POINTS)*100}%; background:var(--rose);"></div></div>
+        </div>
       `;
 
-      // 檢查是否從 QR 掃描進來 (scan=1)
-      const params = new URLSearchParams(window.location.search);
-      if (params.get("scan") === "1") {
-        handleScan();
-      }
+      if (new URLSearchParams(window.location.search).get("scan") === "1") handleScan();
     }
 
     async function handleScan() {
       const now = Date.now();
       const key = userData.selectedCharacter;
+      const resText = document.getElementById("resultText");
+
       if (now - userData.lastScanTime < WAITING_MS) {
-        document.getElementById("resultText").textContent = "系統冷卻中...";
+        resText.textContent = "尚未冷卻，請稍後再試";
         return;
       }
 
@@ -344,12 +321,20 @@
         userData.scores[key]++;
         userData.lastScanTime = now;
         saveData();
-        document.getElementById("resultText").textContent = "觀測成功！";
-        setTimeout(renderMain, 1000);
-      }
-
-      if (userData.scores[key] >= MAX_POINTS) {
-        setTimeout(() => window.location.href = NEXT_URL, 2000);
+        
+        const avatar = document.getElementById("avatar");
+        avatar.classList.add("point-burst");
+        resText.textContent = "觀測資料寫入中...";
+        
+        setTimeout(() => {
+          avatar.classList.remove("point-burst");
+          renderMain();
+          window.history.replaceState({}, document.title, window.location.pathname);
+          if (userData.scores[key] >= MAX_POINTS) {
+            resText.textContent = "解鎖完成，即將跳轉...";
+            setTimeout(() => window.location.href = NEXT_URL, 1500);
+          }
+        }, 1000);
       }
     }
 
@@ -357,8 +342,7 @@
     document.getElementById("resetCurrentBtn").onclick = () => { userData.scores[userData.selectedCharacter] = 0; saveData(); renderMain(); };
     document.getElementById("clearAllFromSelect").onclick = () => { localStorage.clear(); location.reload(); };
 
-    // 初始化
-    renderMain();
+    window.onload = renderMain;
   </script>
 </body>
 </html>
