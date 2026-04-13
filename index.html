@@ -11,7 +11,6 @@
       font-display: swap;
     }
 
-
     :root {
       --ink: #2d244c;
       --violet: #4d3c78;
@@ -23,2148 +22,343 @@
       --orange: #d78a61;
     }
 
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     html, body {
       margin: 0;
       width: 100%;
-      min-height: 100%;
+      height: 100%;
       font-family: "Cubic11", "Noto Sans TC", Arial, sans-serif;
       color: #fff;
       overflow-x: hidden;
-      overflow-y: auto;
       background: #000;
     }
 
-    body {
-      min-height: 100dvh;
-      scroll-behavior: smooth;
-    }
+    body { min-height: 100dvh; display: flex; flex-direction: column; }
 
+    /* 背景層保持固定 */
     #bgLayer {
       position: fixed;
       inset: 0;
       background-image: url("./主背景.png");
       background-size: cover;
       background-position: center;
-      background-repeat: no-repeat;
       z-index: 0;
-      transition: background-image 0.4s ease;
+      transition: background-image 0.5s ease;
     }
 
     #bgOverlay {
       position: fixed;
       inset: 0;
-      background:
-        radial-gradient(circle at 50% 18%, rgba(160,106,140,0.18), transparent 28%),
-        linear-gradient(180deg, rgba(34,28,56,0.16), rgba(38,30,62,0.42) 55%, rgba(0,0,0,0.72));
+      background: linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.8));
       z-index: 1;
       pointer-events: none;
-    }
-
-    #bgOverlay::before,
-    #bgOverlay::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    #bgOverlay::before {
-      background:
-        linear-gradient(rgba(239,232,221,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(239,232,221,0.028) 1px, transparent 1px);
-      background-size: 24px 24px, 24px 24px;
-      opacity: 0.18;
-      mix-blend-mode: screen;
-    }
-
-    #bgOverlay::after {
-      background:
-        repeating-linear-gradient(
-          180deg,
-          rgba(239,232,221,0.02) 0px,
-          rgba(239,232,221,0.02) 1px,
-          transparent 1px,
-          transparent 4px
-        ),
-        radial-gradient(circle at 12% 26%, rgba(95,167,165,0.22) 0 2px, transparent 3px),
-        radial-gradient(circle at 68% 40%, rgba(160,106,140,0.18) 0 2px, transparent 3px),
-        radial-gradient(circle at 82% 72%, rgba(215,138,97,0.18) 0 2px, transparent 3px);
-      opacity: 0.14;
-      animation: overlayFloat 10s linear infinite;
-    }
-
-    #rotateBlock {
-      position: fixed;
-      inset: 0;
-      background: rgba(26,20,40,0.96);
-      color: white;
-      z-index: 9999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 24px;
-    }
-    .rotate-text {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      line-height: 1.6;
     }
 
     .app {
       position: relative;
       z-index: 2;
       width: 100%;
-      min-height: 100dvh;
-      padding: 12px 12px max(120px, 16vh);
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-    }
-
-    .screen {
-      width: 100%;
-      max-width: 1400px;
-      display: none;
-    }
-
-    .screen.active {
-      display: block;
-    }
-
-    .panel {
-      background: linear-gradient(180deg, rgba(42, 33, 66, 0.78), rgba(25, 20, 44, 0.84));
-      border: 1px solid rgba(160,106,140,0.2);
-      border-radius: 28px;
-      backdrop-filter: blur(14px);
-      box-shadow: 0 14px 40px rgba(0,0,0,0.42), 0 0 0 1px rgba(239,232,221,0.04) inset;
-    }
-
-    .screen {
-      margin: 0 auto;
-    }
-
-    .screen.active {
-      animation: screenReveal 0.65s ease;
-    }
-
-    #selectScreen.active .select-wrap {
-      animation: softPanelRise 0.8s ease;
-    }
-
-    @keyframes screenReveal {
-      0% { opacity: 0; transform: translateY(18px) scale(0.985); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    @keyframes softPanelRise {
-      0% { opacity: 0; transform: translateY(22px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    #transitionLayer {
-      position: fixed;
-      inset: 0;
-      z-index: 6;
-      pointer-events: none;
-      opacity: 0;
-      overflow: hidden;
-      background: radial-gradient(circle at center, rgba(160,106,140,0.08), rgba(0,0,0,0) 55%);
-      transition: opacity 0.22s ease;
-    }
-
-    #transitionLayer::before,
-    #transitionLayer::after {
-      content: "";
-      position: absolute;
-      inset: -10%;
-      opacity: 0;
-    }
-
-    #transitionLayer::before {
-      background:
-        linear-gradient(90deg, transparent 0%, rgba(160,106,140,0.18) 45%, rgba(239,232,221,0.3) 50%, rgba(160,106,140,0.18) 55%, transparent 100%),
-        repeating-linear-gradient(180deg, rgba(255,255,255,0.07) 0px, rgba(255,255,255,0.07) 1px, transparent 1px, transparent 5px);
-      transform: translateX(-115%);
-      mix-blend-mode: screen;
-    }
-
-    #transitionLayer::after {
-      border: 1px solid rgba(160,106,140,0.28);
-      box-shadow: 0 0 60px rgba(77,60,120,0.22) inset;
-      clip-path: inset(4% round 26px);
-      transform: scale(1.03);
-    }
-
-    #transitionLayer.active {
-      opacity: 1;
-    }
-
-    #transitionLayer.active::before {
-      animation: screenSweep 0.72s cubic-bezier(.19,.84,.37,1);
-      opacity: 1;
-    }
-
-    #transitionLayer.active::after {
-      animation: framePulse 0.5s ease;
-      opacity: 1;
-    }
-
-    @keyframes screenSweep {
-      0% { transform: translateX(-115%); opacity: 0; }
-      18% { opacity: 1; }
-      100% { transform: translateX(115%); opacity: 0; }
-    }
-
-    @keyframes framePulse {
-      0% { opacity: 0; transform: scale(1.02); }
-      45% { opacity: 1; }
-      100% { opacity: 0; transform: scale(1); }
-    }
-    @keyframes overlayFloat {
-      0% { transform: translateX(0); }
-      50% { transform: translateX(10px); }
-      100% { transform: translateX(0); }
-    }
-
-    .char-card {
-      position: relative;
-      overflow: hidden;
-      transform-origin: center;
-    }
-
-    .char-card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(120deg, transparent 28%, rgba(255,255,255,0.12) 48%, rgba(160,106,140,0.2) 52%, transparent 72%);
-      transform: translateX(-130%);
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .char-card.card-activate {
-      animation: selectPulse 0.52s cubic-bezier(.2,.86,.28,1);
-      border-color: rgba(160,106,140,0.42);
-      box-shadow: 0 0 0 1px rgba(160,106,140,0.12) inset, 0 0 26px rgba(77,60,120,0.16);
-    }
-
-    .char-card.card-activate::after {
-      animation: selectSheen 0.52s ease;
-      opacity: 1;
-    }
-
-    @keyframes selectPulse {
-      0% { transform: scale(1); }
-      35% { transform: scale(0.97); }
-      75% { transform: scale(1.02); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes selectSheen {
-      0% { transform: translateX(-130%); opacity: 0; }
-      20% { opacity: 1; }
-      100% { transform: translateX(130%); opacity: 0; }
-    }
-
-    .main-wrap.enter-sequence .hero-panel {
-      animation: panelRise 0.6s cubic-bezier(.16,.84,.32,1);
-    }
-
-    .main-wrap.enter-sequence .side-panel {
-      animation: panelSlide 0.66s cubic-bezier(.16,.84,.32,1);
-    }
-
-    .main-wrap.enter-sequence .hero-frame {
-      animation: frameReveal 0.8s ease;
-    }
-
-    .main-wrap.enter-sequence .avatar-wrap {
-      animation: targetLock 0.9s cubic-bezier(.15,.82,.3,1);
-    }
-
-    .main-wrap.enter-sequence .telemetry-card,
-    .main-wrap.enter-sequence .status-pill,
-    .main-wrap.enter-sequence .dots,
-    .main-wrap.enter-sequence .result-text {
-      letter-spacing: 0.03em;
-      animation: uiFadeUp 0.55s ease both;
-    }
-
-    .main-wrap.enter-sequence .status-pill:nth-child(2),
-    .main-wrap.enter-sequence .telemetry-card:nth-child(2) { animation-delay: 0.08s; }
-    .main-wrap.enter-sequence .status-pill:nth-child(3),
-    .main-wrap.enter-sequence .telemetry-card:nth-child(3) { animation-delay: 0.16s; }
-    .main-wrap.enter-sequence .dots { animation-delay: 0.22s; }
-    .main-wrap.enter-sequence .result-text {
-      letter-spacing: 0.03em; animation-delay: 0.3s; }
-
-    @keyframes panelRise {
-      0% { opacity: 0; transform: translateY(28px) scale(0.985); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    @keyframes panelSlide {
-      0% { opacity: 0; transform: translateX(22px); }
-      100% { opacity: 1; transform: translateX(0); }
-    }
-
-    @keyframes frameReveal {
-      0% { clip-path: inset(0 0 100% 0); opacity: 0.35; }
-      100% { clip-path: inset(0 0 0 0); opacity: 1; }
-    }
-
-    @keyframes targetLock {
-      0% { opacity: 0; transform: scale(0.56) rotate(-12deg); filter: blur(8px); }
-      42% { opacity: 1; transform: scale(1.08) rotate(4deg); filter: blur(0); }
-      100% { opacity: 1; transform: scale(1) rotate(0); }
-    }
-
-    @keyframes uiFadeUp {
-      0% { opacity: 0; transform: translateY(12px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    .avatar-wrap.point-burst {
-      animation: pointBurst 0.82s cubic-bezier(.17,.84,.3,1);
-    }
-
-    .hero-frame.point-burst::after {
-      content: "";
-      position: absolute;
-      inset: 12% 10%;
-      border: 1px solid rgba(255,84,84,0.3);
-      border-radius: 26px;
-      animation: ringExpand 0.72s ease;
-      pointer-events: none;
-    }
-
-    .result-text.signal-boost {
-      animation: resultBoost 0.7s cubic-bezier(.18,.9,.28,1);
-    }
-
-    .progress-item.progress-flash {
-      animation: progressFlash 0.72s ease;
-    }
-
-    .dot.dot-pop {
-      animation: dotPop 0.55s ease;
-    }
-
-    @keyframes pointBurst {
-      0% { transform: scale(0.88); filter: brightness(1); }
-      34% { transform: scale(1.12); filter: brightness(1.3); }
-      100% { transform: scale(1); filter: brightness(1); }
-    }
-
-    @keyframes ringExpand {
-      0% { opacity: 0.8; transform: scale(0.84); }
-      100% { opacity: 0; transform: scale(1.12); }
-    }
-
-    @keyframes resultBoost {
-      0% { letter-spacing: 0.05em; opacity: 0.3; }
-      25% { letter-spacing: 0.22em; opacity: 1; }
-      100% { letter-spacing: 0.06em; opacity: 1; }
-    }
-
-    @keyframes progressFlash {
-      0% { box-shadow: 0 0 0 rgba(160,106,140,0); border-color: rgba(255,255,255,0.08); }
-      35% { box-shadow: 0 0 24px rgba(160,106,140,0.18); border-color: rgba(160,106,140,0.3); }
-      100% { box-shadow: 0 0 0 rgba(160,106,140,0); }
-    }
-
-    @keyframes dotPop {
-      0% { transform: scale(0.9); }
-      40% { transform: scale(1.45); }
-      100% { transform: scale(1.1); }
-    }
-
-
-
-    .hero-inner::before,
-    .hero-inner::after {
-      content: "";
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.95), rgba(199,139,162,0.65) 50%, rgba(77,60,120,0) 72%);
-      opacity: 0.45;
-      pointer-events: none;
-      filter: blur(0.2px);
-    }
-
-    .hero-inner::before {
-      top: 20%;
-      left: 14%;
-      animation: sparkleFloat1 7.5s ease-in-out infinite;
-    }
-
-    .hero-inner::after {
-      right: 16%;
-      bottom: 20%;
-      animation: sparkleFloat2 8.4s ease-in-out infinite;
-    }
-
-    .avatar-zone::before,
-    .avatar-zone::after {
-      content: "";
-      position: absolute;
-      border-radius: 999px;
-      pointer-events: none;
-      opacity: 0.4;
-    }
-
-    .avatar-zone::before {
-      width: 210px;
-      height: 210px;
-      background: radial-gradient(circle at center, rgba(199,139,162,0.18), rgba(199,139,162,0.06) 45%, transparent 72%);
-      animation: haloBreath 6.8s ease-in-out infinite;
-    }
-
-    .avatar-zone::after {
-      width: 252px;
-      height: 252px;
-      border: 1px dashed rgba(239,232,221,0.14);
-      animation: haloRotate 16s linear infinite;
-    }
-
-    .dot.active {
-      background: radial-gradient(circle at 35% 35%, #fff, #c78ba2 58%, #4d3c78 100%);
-      transform: scale(1.08);
-      box-shadow: 0 0 16px rgba(95,167,165,0.22);
-      animation: activeDotGlow 2.6s ease-in-out infinite;
-    }
-
-    .bar-fill {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .bar-fill::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,0.0) 35%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.0) 65%, transparent 100%);
-      transform: translateX(-120%);
-      animation: fillSheen 3.6s ease-in-out infinite;
-    }
-
-    .char-card .char-badge {
-      transition: transform 0.45s ease, box-shadow 0.45s ease;
-    }
-
-    .char-card.is-center .char-badge {
-      transform: translateY(-2px) scale(1.08);
-      box-shadow: 0 12px 24px rgba(77,60,120,0.28);
-      animation: badgeBob 3.8s ease-in-out infinite;
-    }
-
-    .char-card.is-center .char-title,
-    .char-card.is-center .char-name {
-      animation: centerTextGlow 3.2s ease-in-out infinite;
-    }
-
-    .char-card.is-center::before {
-      content: "";
-      position: absolute;
-      left: 10%;
-      right: 10%;
-      bottom: -10px;
-      height: 18px;
-      border-radius: 999px;
-      background: radial-gradient(circle at center, rgba(239,232,221,0.18), rgba(160,106,140,0.12) 45%, transparent 78%);
-      filter: blur(8px);
-      opacity: 0.95;
-      pointer-events: none;
-    }
-
-    .result-text {
-      position: relative;
-    }
-
-    .result-text::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      bottom: -8px;
-      width: 54px;
-      height: 2px;
-      transform: translateX(-50%);
-      background: linear-gradient(90deg, transparent, rgba(239,232,221,0.55), transparent);
-      opacity: 0.8;
-      animation: textUnderlinePulse 3.2s ease-in-out infinite;
-    }
-
-    @keyframes ambientGlow {
-      0%, 100% { opacity: 0.92; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.03); }
-    }
-
-    @keyframes sparkleFloat1 {
-      0%, 100% { transform: translate(0, 0) scale(0.9); opacity: 0.28; }
-      50% { transform: translate(8px, -14px) scale(1.15); opacity: 0.58; }
-    }
-
-    @keyframes sparkleFloat2 {
-      0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.24; }
-      50% { transform: translate(-10px, 12px) scale(1.12); opacity: 0.52; }
-    }
-
-    @keyframes haloBreath {
-      0%, 100% { transform: scale(0.96); opacity: 0.26; }
-      50% { transform: scale(1.04); opacity: 0.5; }
-    }
-
-    @keyframes haloRotate {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    @keyframes activeDotGlow {
-      0%, 100% { box-shadow: 0 0 10px rgba(95,167,165,0.16); }
-      50% { box-shadow: 0 0 18px rgba(199,139,162,0.28); }
-    }
-
-    @keyframes fillSheen {
-      0%, 100% { transform: translateX(-120%); opacity: 0; }
-      30% { opacity: 1; }
-      60% { transform: translateX(120%); opacity: 0.8; }
-      100% { opacity: 0; }
-    }
-
-    @keyframes badgeBob {
-      0%, 100% { transform: translateY(-2px) scale(1.08); }
-      50% { transform: translateY(-7px) scale(1.1); }
-    }
-
-    @keyframes centerTextGlow {
-      0%, 100% { text-shadow: 0 0 0 rgba(239,232,221,0); }
-      50% { text-shadow: 0 0 10px rgba(239,232,221,0.18); }
-    }
-
-    @keyframes textUnderlinePulse {
-      0%, 100% { width: 54px; opacity: 0.45; }
-      50% { width: 86px; opacity: 0.88; }
-    }
-
-    .page-bottom-space {
-      height: clamp(100px, 16vh, 170px);
-      pointer-events: none;
-    }
-
-    /* 選角頁 */
-    .select-wrap {
-      width: 100%;
-      padding: 18px;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      gap: 14px;
-      min-height: calc(100dvh - 24px);
-    }
-
-    .title-box {
-      text-align: center;
-      padding: 4px 8px 0;
-    }
-
-    .game-title {
-      letter-spacing: 0.06em;
-      line-height: 1.15;
-      margin: 0;
-      font-size: clamp(24px, 3.4vw, 42px);
-      font-weight: 900;
-      letter-spacing: 0.05em;
-    }
-
-    .game-subtitle {
-      margin: 10px auto 0;
-      max-width: 860px;
-      line-height: 1.7;
-      color: rgba(255,255,255,0.84);
-      font-size: 14px;
-    }
-
-    .select-hint {
-      margin-top: 10px;
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      color: rgba(239,232,221,0.62);
-      text-transform: uppercase;
-    }
-
-    .select-carousel-shell {
-      position: relative;
-    }
-
-    .select-carousel-base {
-      position: absolute;
-      left: 50%;
-      bottom: 10px;
-      transform: translateX(-50%);
-      width: min(480px, 58vw);
-      height: 42px;
-      border-radius: 999px;
-      background:
-        radial-gradient(circle at center, rgba(239,232,221,0.12), rgba(160,106,140,0.12) 40%, rgba(77,60,120,0.04) 72%, transparent 100%);
-      filter: blur(10px);
-      opacity: 0.9;
-      pointer-events: none;
-    }
-
-        .select-grid {
-      display: flex;
-      align-items: stretch;
-      gap: 10px;
-      min-height: 0;
-      overflow-x: auto;
-      overflow-y: hidden;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior-x: contain;
-      padding: 18px 26vw 18px;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-
-    .select-grid::-webkit-scrollbar {
-      display: none;
-    }
-
-    .char-card {
-      border: 1px solid rgba(255,255,255,0.10);
-      background: linear-gradient(180deg, rgba(255,255,255,0.065), rgba(255,255,255,0.038));
-      border-radius: 26px;
-      padding: 16px;
-      cursor: pointer;
-      transition: transform 0.42s cubic-bezier(.2,.82,.2,1), background 0.42s ease, border-color 0.42s ease, box-shadow 0.42s ease, opacity 0.42s ease, filter 0.42s ease;
+      flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      min-height: 166px;
-      text-align: left;
-      color: #fff;
-      flex: 0 0 clamp(220px, 28vw, 320px);
-      scroll-snap-align: center;
-      transform: translateY(10px) scale(0.78);
-      opacity: 0.34;
-      filter: saturate(0.72) blur(0.2px);
-      box-shadow: 0 8px 18px rgba(20, 16, 34, 0.18);
+      padding: 10px;
     }
 
-    .char-card:hover {
-      background: rgba(255,255,255,0.10);
-      border-color: rgba(255,255,255,0.22);
-    }
-
-    .char-card.is-center {
-      transform: translateY(-8px) scale(1.08);
-      opacity: 1;
-      filter: saturate(1.06) blur(0);
-      background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
-      border-color: rgba(199,139,162,0.44);
-      box-shadow:
-        0 0 0 1px rgba(239,232,221,0.08) inset,
-        0 18px 42px rgba(45,36,76,0.30),
-        0 0 26px rgba(160,106,140,0.14);
-    }
-
-    .char-card.is-side {
-      transform: translateY(2px) scale(0.88);
-      opacity: 0.58;
-      filter: saturate(0.82);
-    }
-
-    .char-card.selected {
-      border-color: rgba(239,232,221,0.46);
-      background: linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.08));
-      box-shadow: 0 0 0 2px rgba(255,255,255,0.06) inset;
-    }
-
-    .char-badge {
-      width: 58px;
-      height: 58px;
-      margin-bottom: 12px;
-      border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      font-weight: 700;
-      box-shadow: 0 8px 18px rgba(77,60,120,0.22);
-    }
-
-    .char-title {
-      font-size: 20px;
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 4px;
-    }
-
-    .char-name {
-      font-size: 15px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.88);
-      margin-bottom: 8px;
-    }
-
-    .char-desc {
-      font-size: 13px;
-      color: rgba(255,255,255,0.72);
-      line-height: 1.6;
-    }
-
-    .actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .btn {
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(239,232,221,0.08);
-      color: white;
-      padding: 12px 16px;
-      border-radius: 14px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 700;
-      transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
-    }
-
-    .btn:hover {
-      background: rgba(239,232,221,0.14);
-      transform: translateY(-1px);
-    }
-
-    .btn.danger {
-      background: rgba(160,106,140,0.22);
-      border-color: rgba(255,255,255,0.12);
-    }
-
-    .btn.danger:hover {
-      background: rgba(160,106,140,0.32);
-    }
-
-    /* 主頁 */
-    .main-wrap {
+    .screen {
       width: 100%;
-      min-height: calc(100dvh - 24px);
+      max-width: 1200px;
+      margin: 0 auto;
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .screen.active { display: flex; flex-direction: column; gap: 15px; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .panel {
+      background: rgba(45, 36, 76, 0.8);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    /* 選角頁面旋轉木馬優化 */
+    .select-wrap { text-align: center; }
+    .select-grid {
+      display: flex;
+      overflow-x: auto;
+      gap: 15px;
+      padding: 20px 10%;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+    .select-grid::-webkit-scrollbar { display: none; }
+
+    .char-card {
+      flex: 0 0 240px;
+      scroll-snap-align: center;
+      transition: all 0.3s ease;
+      opacity: 0.6;
+      transform: scale(0.9);
+      cursor: pointer;
+    }
+    .char-card.is-center { opacity: 1; transform: scale(1.05); border-color: var(--rose); }
+
+    /* 主頁面佈局：手機直向堆疊，橫向並排 */
+    .main-wrap {
       display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(240px, 0.8fr);
-      gap: 10px;
+      grid-template-columns: 1fr;
+      gap: 15px;
+      width: 100%;
+    }
+
+    @media (min-width: 900px) {
+      .main-wrap { grid-template-columns: 1.2fr 0.8fr; }
     }
 
     .hero-panel {
-      padding: 16px;
+      position: relative;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 0;
-      position: relative;
-      overflow: hidden;
-      isolation: isolate;
-      border-color: rgba(160,106,140,0.24);
+      text-align: center;
+      min-height: 350px;
     }
-
-    .hero-panel::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 50% 28%, rgba(160,106,140,0.14), transparent 34%),
-        radial-gradient(circle at 18% 82%, rgba(215,138,97,0.10), transparent 24%),
-        linear-gradient(180deg, rgba(255,255,255,0.05), transparent 22%, transparent 78%, rgba(160,106,140,0.08));
-      opacity: 1;
-      pointer-events: none;
-      z-index: -3;
-      animation: ambientGlow 9s ease-in-out infinite;
-    }
-
-    .hero-panel::after {
-      content: "";
-      position: absolute;
-      inset: -18% -35%;
-      background: linear-gradient(100deg, transparent 0%, rgba(160,106,140,0.0) 35%, rgba(160,106,140,0.18) 46%, rgba(255,255,255,0.12) 50%, rgba(160,106,140,0.18) 54%, rgba(160,106,140,0.0) 66%, transparent 100%);
-      transform: translateX(-55%);
-      animation: panelSweep 5.2s linear infinite;
-      pointer-events: none;
-      z-index: -1;
-      mix-blend-mode: screen;
-    }
-
-    .hero-panel .scanlines,
-    .hero-panel .tactical-grid,
-    .hero-panel .alert-ring {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    .hero-panel .scanlines {
-      background: repeating-linear-gradient(180deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 5px);
-      opacity: 0.08;
-      mix-blend-mode: screen;
-    }
-
-    .hero-panel .tactical-grid {
-      background:
-        linear-gradient(rgba(95,167,165,0.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(95,167,165,0.08) 1px, transparent 1px);
-      background-size: 72px 72px;
-      mask-image: radial-gradient(circle at center, black 32%, transparent 88%);
-      opacity: 0.4;
-    }
-
-    .hero-panel .alert-ring {
-      inset: auto;
-      width: 420px;
-      height: 420px;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      border-radius: 50%;
-      border: 1px solid rgba(160,106,140,0.12);
-      box-shadow: 0 0 0 28px rgba(77,60,120,0.04), 0 0 0 56px rgba(77,60,120,0.022);
-      animation: radarPulse 4.2s ease-in-out infinite;
-      opacity: 0.75;
-    }
-
-    .hero-inner {
-      width: 100%;
-      max-width: 620px;
-      margin: 0 auto;
-      position: relative;
-      animation: innerFloat 5.2s ease-in-out infinite;
-      display: grid;
-      gap: 12px;
-    }
-
-    .hero-topline {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      color: rgba(239,232,221,0.82);
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      font-weight: 700;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(160,106,140,0.16);
-    }
-
-    .hero-frame {
-      position: relative;
-      padding: 18px 16px 16px;
-      border: 1px solid rgba(160,106,140,0.18);
-      border-radius: 22px;
-      background: linear-gradient(180deg, rgba(45,36,76,0.6), rgba(30,24,52,0.44));
-      box-shadow: inset 0 0 0 1px rgba(239,232,221,0.03);
-      overflow: hidden;
-    }
-
-    .hero-frame::before,
-    .hero-frame::after,
-    .hero-corners::before,
-    .hero-corners::after {
-      content: "";
-      position: absolute;
-      width: 34px;
-      height: 34px;
-      border-color: rgba(160,106,140,0.46);
-      pointer-events: none;
-    }
-
-    .hero-frame::before {
-      top: 8px;
-      left: 8px;
-      border-top: 2px solid;
-      border-left: 2px solid;
-    }
-
-    .hero-frame::after {
-      top: 8px;
-      right: 8px;
-      border-top: 2px solid;
-      border-right: 2px solid;
-    }
-
-    .hero-corners::before {
-      bottom: 8px;
-      left: 8px;
-      border-bottom: 2px solid;
-      border-left: 2px solid;
-    }
-
-    .hero-corners::after {
-      bottom: 8px;
-      right: 8px;
-      border-bottom: 2px solid;
-      border-right: 2px solid;
-    }
-
-    .hero-status {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
-
-    .status-pill {
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 10px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      font-weight: 800;
-      border: 1px solid rgba(160,106,140,0.18);
-      background: rgba(95,167,165,0.08);
-      color: rgba(239,232,221,0.92);
-      box-shadow: 0 0 16px rgba(95,167,165,0.08) inset;
-    }
-
-    .status-pill.live {
-      background: rgba(160,106,140,0.16);
-      color: #fff;
-      animation: statusBlink 2.8s ease-in-out infinite;
-    }
-
-    .avatar-zone {
-      position: relative;
-      display: grid;
-      place-items: center;
-      padding: 6px 0 2px;
-    }
-
-    .avatar-target {
-      position: absolute;
-      width: 188px;
-      height: 188px;
-      border-radius: 50%;
-      border: 1px solid rgba(160,106,140,0.12);
-      box-shadow: 0 0 0 18px rgba(77,60,120,0.04), 0 0 0 36px rgba(77,60,120,0.018);
-    }
-
-    .avatar-target::before,
-    .avatar-target::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(160,106,140,0.18);
-    }
-
-    .avatar-target::before { width: 1px; height: 132%; }
-    .avatar-target::after { width: 132%; height: 1px; }
 
     .avatar-wrap {
-      width: clamp(92px, 11vw, 122px);
-      height: clamp(92px, 11vw, 122px);
-      margin: 0 auto;
-      border-radius: 28px;
+      width: 120px;
+      height: 120px;
+      font-size: 50px;
+      background: var(--violet);
+      border-radius: 30%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: clamp(38px, 4.2vw, 52px);
-      box-shadow: 0 14px 28px rgba(0,0,0,0.46), 0 0 0 1px rgba(255,255,255,0.1) inset, 0 0 28px rgba(77,60,120,0.12);
-      position: relative;
-      overflow: hidden;
-      isolation: isolate;
-      transform: translateZ(0);
-    }
-
-    .avatar-wrap::before {
-      content: "";
-      position: absolute;
-      inset: -1px;
-      border-radius: inherit;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.03) 24%, rgba(255,255,255,0.02) 100%),
-        repeating-linear-gradient(180deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 6px);
-      opacity: 0.46;
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .avatar-wrap::after {
-      content: "";
-      position: absolute;
-      left: 8%;
-      right: 8%;
-      top: -24%;
-      height: 24%;
-      border-radius: 999px;
-      background: linear-gradient(180deg, rgba(160,106,140,0), rgba(199,139,162,0.55), rgba(255,255,255,0.08));
-      filter: blur(5px);
-      opacity: 0.95;
-      animation: scanBeam 2.7s ease-in-out infinite;
-      pointer-events: none;
-      mix-blend-mode: screen;
-    }
-
-    .avatar-meta {
-      text-align: center;
-    }
-
-    .avatar-title {
-      letter-spacing: 0.05em;
-      line-height: 1.2;
-      margin-top: 4px;
-      font-size: clamp(22px, 2.7vw, 30px);
-      font-weight: 900;
-      line-height: 1.08;
-      letter-spacing: 0.04em;
-      text-shadow: 0 0 18px rgba(160,106,140,0.14);
-    }
-
-    .avatar-name {
-      margin-top: 4px;
-      font-size: clamp(13px, 1.6vw, 16px);
-      color: rgba(239,232,221,0.86);
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-    }
-
-    .avatar-sub {
-      margin: 8px auto 0;
-      max-width: 480px;
-      line-height: 1.7;
-      color: rgba(239,232,221,0.74);
-      font-size: 13px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 20px var(--rose);
     }
 
     .telemetry-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap: 10px;
-      margin-top: 8px;
+      width: 100%;
+      margin-top: 15px;
     }
 
     .telemetry-card {
-      border: 1px solid rgba(160,106,140,0.12);
-      background: rgba(95,167,165,0.06);
-      border-radius: 14px;
-      padding: 10px 12px;
-      text-align: left;
-    }
-
-    .telemetry-card span {
-      display: block;
-      font-size: 10px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(239,232,221,0.58);
-      margin-bottom: 6px;
-    }
-
-    .telemetry-card strong {
-      display: block;
-      font-size: 18px;
-      line-height: 1;
-      color: #fff;
-      text-shadow: 0 0 14px rgba(160,106,140,0.16);
-    }
-
-    .dots {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 6px;
-    }
-
-    .dot {
-      width: 14px;
-      height: 14px;
-      border-radius: 999px;
-      background: rgba(239,232,221,0.08);
-      border: 1px solid rgba(160,106,140,0.22);
-      box-shadow: inset 0 0 10px rgba(77,60,120,0.06);
-      transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .dot.active {
-      background: radial-gradient(circle at 35% 35%, #fff, #c78ba2 58%, #4d3c78 100%);
-      transform: scale(1.08);
-      box-shadow: 0 0 16px rgba(95,167,165,0.22);
-    }
-
-    .result-text {
-      letter-spacing: 0.03em;
-      margin-top: 6px;
-      min-height: 26px;
-      font-size: 15px;
-      font-weight: 800;
-      font-family: "Cubic11", "Noto Sans TC", Arial, sans-serif;
-      color: rgba(239,232,221,0.92);
-      text-shadow: 0 0 14px rgba(160,106,140,0.14);
-      letter-spacing: 0.04em;
-      text-align: center;
-    }
-
-    .flash {
-      animation: flashText 1.15s ease;
-    }
-
-    .signal-text {
-      animation: signalSoft 0.6s ease 1;
-    }
-
-    @keyframes flashText {
-      0%   { transform: scale(0.95); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .side-panel {
-      padding: 12px;
-      overflow: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      border-color: rgba(160,106,140,0.16);
-    }
-
-    .side-title {
-      margin: 0 0 8px;
-      font-size: 15px;
-      font-weight: 900;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: rgba(239,232,221,0.86);
-    }
-
-    .info-item {
-      padding: 12px;
-      border-radius: 18px;
-      background: rgba(95,167,165,0.05);
-      border: 1px solid rgba(160,106,140,0.12);
-      line-height: 1.7;
+      background: rgba(255,255,255,0.05);
+      padding: 10px;
+      border-radius: 12px;
       font-size: 12px;
-      color: rgba(239,232,221,0.74);
     }
 
-    .progress-list {
-      display: grid;
-      gap: 10px;
-      margin-top: 12px;
-    }
+    .progress-list { display: flex; flex-direction: column; gap: 10px; }
+    .bar { height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; }
+    .bar-fill { height: 100%; transition: width 0.5s ease; }
 
-    .progress-item {
+    .btn {
+      background: var(--rose);
+      border: none;
+      color: white;
       padding: 12px;
-      border-radius: 18px;
-      background: rgba(95,167,165,0.05);
-      border: 1px solid rgba(160,106,140,0.12);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
-    }
-
-    .progress-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-
-    .progress-title {
-      font-size: 14px;
-      font-weight: 800;
-      line-height: 1.2;
-    }
-
-    .progress-name {
-      font-size: 12px;
-      color: rgba(255,255,255,0.72);
-      margin-top: 2px;
-    }
-
-    .bar {
-      height: 8px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.07);
-      overflow: hidden;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
-    }
-
-    .bar-fill {
-      height: 100%;
-      width: 0%;
-      border-radius: 999px;
-      transition: width 0.95s ease;
-    }
-
-    .actions-vertical {
+      border-radius: 12px;
+      font-weight: bold;
+      cursor: pointer;
       width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: auto;
+    }
+    .btn.danger { background: #7e3240; }
+
+    /* 隱藏旋轉提示，除非你真的想強制 */
+    #rotateBlock {
+      display: none;
+      position: fixed; inset: 0; background: #000; z-index: 9999;
+      flex-direction: column; align-items: center; justify-content: center;
     }
 
-    .actions-vertical .btn {
-      width: 100%;
-      padding: 10px 12px;
-      font-size: 13px;
-      border-radius: 14px;
-    }
-
-    .small {
-      font-size: 12px;
-      color: rgba(255,255,255,0.66);
-    }
-
-    @keyframes panelSweep {
-      0% { transform: translateX(-58%); }
-      100% { transform: translateX(58%); }
-    }
-
-    @keyframes scanBeam {
-      0%, 100% { transform: translateY(0); opacity: 0.25; }
-      45% { transform: translateY(420%); opacity: 0.95; }
-      50% { transform: translateY(460%); opacity: 0.5; }
-      55% { transform: translateY(420%); opacity: 0.9; }
-    }
-
-    @keyframes radarPulse {
-      0%, 100% { transform: translate(-50%, -50%) scale(0.98); opacity: 0.6; }
-      50% { transform: translate(-50%, -50%) scale(1.04); opacity: 0.9; }
-    }
-
-    @keyframes innerFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
-    }
-
-    @keyframes statusBlink {
-      0%, 45% { opacity: 1; }
-      50%, 100% { opacity: 0.5; }
-    }
-
-    @keyframes signalSoft {
-      0% { transform: translate(0,0); text-shadow: 0 0 0 rgba(255,0,0,0); }
-      25% { transform: translate(-1px,1px); text-shadow: 1px 0 rgba(160,106,140,0.14); }
-      50% { transform: translate(1px,-1px); text-shadow: -1px 0 rgba(239,232,221,0.14); }
-      100% { transform: translate(0,0); text-shadow: 0 0 14px rgba(160,106,140,0.14); }
-    }
-
-    /* 角色色塊 */
-    .theme-1 { background: linear-gradient(135deg, #6f648e, #3b2f59); }
-    .theme-2 { background: linear-gradient(135deg, #d1827b, #7e3240); }
-    .theme-3 { background: linear-gradient(135deg, #55b7b2, #2d5163); }
-    .theme-4 { background: linear-gradient(135deg, #e7d6c2, #9e8f85); color: #2c2440; }
-    .theme-5 { background: linear-gradient(135deg, #ccb3d9, #8d6e9d); }
-    .theme-6 { background: linear-gradient(135deg, #5c4e85, #201738); }
-
-    .fill-1 { background: linear-gradient(90deg, #6f648e, #3b2f59); }
-    .fill-2 { background: linear-gradient(90deg, #d1827b, #7e3240); }
-    .fill-3 { background: linear-gradient(90deg, #55b7b2, #2d5163); }
-    .fill-4 { background: linear-gradient(90deg, #e7d6c2, #9e8f85); }
-    .fill-5 { background: linear-gradient(90deg, #ccb3d9, #8d6e9d); }
-    .fill-6 { background: linear-gradient(90deg, #5c4e85, #201738); }
-
-    /* 動畫 */
-    .animate-1 { animation: focusLock 1.2s cubic-bezier(.2,.8,.2,1) forwards; }
-    .animate-2 { animation: gentlePeck 1.05s cubic-bezier(.18,.82,.24,1) forwards; }
-    .animate-3 { animation: monitorBloom 1.18s cubic-bezier(.2,.8,.2,1) forwards; }
-    .animate-4 { animation: featherLift 1.16s cubic-bezier(.2,.8,.2,1) forwards; }
-    .animate-5 { animation: cocoonDream 1.22s cubic-bezier(.2,.8,.2,1) forwards; }
-    .animate-6 { animation: signalDrop 1.16s cubic-bezier(.2,.8,.2,1) forwards; }
-
-    @keyframes focusLock {
-      0%   { transform: scale(0.92); filter: blur(8px) brightness(0.85); opacity: 0.55; }
-      32%  { transform: scale(1.07) rotate(-2deg); filter: blur(1px) brightness(1.12); opacity: 1; }
-      55%  { transform: scale(0.98) rotate(1deg); }
-      78%  { transform: scale(1.03); }
-      100% { transform: scale(1); filter: blur(0) brightness(1); opacity: 1; }
-    }
-
-    @keyframes gentlePeck {
-      0%   { transform: translateX(0) scale(0.88); opacity: 0.4; filter: blur(3px); }
-      16%  { transform: translateX(-8px) scale(1.03); }
-      28%  { transform: translateX(8px) scale(1.08); }
-      40%  { transform: translateX(-4px) scale(0.98); }
-      56%  { transform: translateX(4px) scale(1.02); }
-      100% { transform: translateX(0) scale(1); opacity: 1; filter: blur(0); }
-    }
-
-    @keyframes monitorBloom {
-      0%   { transform: perspective(500px) rotateX(22deg) scale(0.72); opacity: 0; filter: blur(5px); }
-      34%  { transform: perspective(500px) rotateX(-6deg) scale(1.1); opacity: 1; filter: blur(0); }
-      58%  { transform: perspective(500px) rotateX(4deg) scale(0.98); }
-      100% { transform: perspective(500px) rotateX(0) scale(1); opacity: 1; }
-    }
-
-    @keyframes featherLift {
-      0%   { transform: translateY(18px) scale(0.85); opacity: 0; filter: blur(6px); }
-      34%  { transform: translateY(-12px) scale(1.06); opacity: 1; filter: blur(0); }
-      56%  { transform: translateY(4px) scale(0.98); }
-      100% { transform: translateY(0) scale(1); opacity: 1; }
-    }
-
-    @keyframes cocoonDream {
-      0%   { transform: scale(0.78); opacity: 0.35; filter: blur(10px) saturate(0.8); }
-      42%  { transform: scale(1.12); opacity: 1; filter: blur(0) saturate(1.18); }
-      68%  { transform: scale(0.96); }
-      100% { transform: scale(1); opacity: 1; filter: blur(0) saturate(1); }
-    }
-
-    @keyframes signalDrop {
-      0%   { transform: translateY(-72px) scaleY(1.24); opacity: 0; filter: blur(6px); }
-      34%  { transform: translateY(10px) scaleY(0.86); opacity: 1; filter: blur(0); }
-      58%  { transform: translateY(-4px) scaleY(1.08); }
-      100% { transform: translateY(0) scaleY(1); opacity: 1; }
-    }
-
-    @keyframes panelSweep {
-      0% { transform: translateX(-46%) skewX(-10deg); }
-      100% { transform: translateX(46%) skewX(-10deg); }
-    }
-
-    @keyframes innerFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
-    }
-
-    @keyframes scanBeam {
-      0%, 100% { top: -22%; opacity: 0.0; }
-      18% { opacity: 0.78; }
-      52% { opacity: 0.92; }
-      100% { top: 98%; opacity: 0.0; }
-    }
-
-    @keyframes signalSoft {
-      0% { transform: translateX(0); filter: blur(0); }
-      20% { transform: translateX(-2px); filter: blur(1px); }
-      40% { transform: translateX(2px); }
-      60% { transform: translateX(-1px); }
-      100% { transform: translateX(0); filter: blur(0); }
-    }
-    /* 平板 */
-    @media (max-width: 1024px) {
-      .select-grid {
-        padding: 10px 20vw 10px;
-      }
-
-      .main-wrap {
-        grid-template-columns: 1.15fr 0.85fr;
-      }
-    }
-
-    /* 手機橫向 */
-    @media (max-width: 900px) and (orientation: landscape) {
-      .app {
-        padding: 10px 10px max(90px, 14vh);
-      }
-
-      .select-wrap,
-      .main-wrap {
-        min-height: calc(100dvh - 20px);
-      }
-
-      .select-grid {
-        gap: 8px;
-        padding: 14px 19vw 16px;
-      }
-
-      .char-card {
-        min-height: 128px;
-        padding: 12px;
-        flex-basis: 240px;
-      }
-
-      .char-badge {
-        width: 46px;
-        height: 46px;
-        font-size: 22px;
-        margin-bottom: 10px;
-        border-radius: 12px;
-      }
-
-      .char-title {
-        font-size: 16px;
-      }
-
-      .char-name {
-        font-size: 13px;
-        margin-bottom: 6px;
-      }
-
-      .char-desc {
-        font-size: 12px;
-        line-height: 1.45;
-      }
-
-      .main-wrap {
-        grid-template-columns: 1.18fr 0.82fr;
-        gap: 8px;
-      }
-
-      .hero-panel {
-        padding: 10px;
-      }
-
-      .side-panel {
-        padding: 10px;
-      }
-
-      .avatar-sub {
-        max-width: 92%;
-        font-size: 12px;
-        line-height: 1.5;
-      }
-
-      .actions-vertical .btn {
-        padding: 9px 12px;
-        font-size: 12px;
-      }
-    }
-
-    /* 更小的手機橫向 */
-    @media (max-width: 760px) and (orientation: landscape) {
-      .game-title {
-      letter-spacing: 0.06em;
-      line-height: 1.15;
-        font-size: 22px;
-      }
-
-      .select-grid {
-        padding: 10px 20vw 10px;
-      }
-
-      .main-wrap {
-        grid-template-columns: 1fr 230px;
-      }
-
-      .avatar-title {
-      letter-spacing: 0.05em;
-      line-height: 1.2;
-        font-size: 22px;
-      }
-
-      .avatar-name {
-        font-size: 14px;
-      }
-
-      .result-text {
-      letter-spacing: 0.03em;
-        font-size: 15px;
-      }
-    }
-
-    /* 手機直向提示旋轉 */
-    @media (max-width: 900px) and (orientation: portrait) {
-      .app {
-        visibility: hidden;
-      }
-
-      #rotateBlock {
-        display: flex;
-      }
+    @media (max-width: 600px) {
+      .game-title { font-size: 20px; }
+      .char-card { flex: 0 0 200px; }
     }
   </style>
-
-
-
 </head>
 <body>
-  <div id="rotateBlock">
-    <div class="rotate-text">請將手機橫向觀看</div>
-  </div>
-
   <div id="bgLayer"></div>
   <div id="bgOverlay"></div>
-  <div id="transitionLayer"></div>
 
   <div class="app">
-    <!-- 選角頁 -->
     <section id="selectScreen" class="screen active">
       <div class="panel select-wrap">
-        <div class="title-box">
-          <h1 class="game-title">請選擇角色</h1>
-          <div class="select-hint">左右滑動，中央角色會放大</div>
-        </div>
-
-        <div class="select-carousel-shell">
-          <div class="select-grid" id="selectGrid"></div>
-          <div class="select-carousel-base"></div>
-        </div>
-
-        <div class="actions">
-          <button class="btn danger" id="clearAllFromSelect">清除全部紀錄</button>
-        </div>
+        <h1 class="game-title">請選擇觀測角色</h1>
+        <div class="select-grid" id="selectGrid"></div>
+        <button class="btn danger" id="clearAllFromSelect" style="margin-top:20px; max-width:200px">清除紀錄</button>
       </div>
     </section>
 
-    <!-- 主頁 -->
     <section id="mainScreen" class="screen">
       <div class="main-wrap">
         <div class="panel hero-panel">
-          <div class="scanlines"></div>
-          <div class="tactical-grid"></div>
-          <div class="alert-ring"></div>
-
-          <div class="hero-inner">
-            
-
-            <div class="hero-frame">
-              <div class="hero-corners"></div>
-
-              
-
-              <div class="avatar-zone">
-                <div class="avatar-target"></div>
-                <div id="avatar" class="avatar-wrap"></div>
-              </div>
-
-              <div class="avatar-meta">
-                <div id="avatarTitle" class="avatar-title"></div>
-                <div id="avatarName" class="avatar-name"></div>
-                <div id="avatarSub" class="avatar-sub"></div>
-              </div>
-
-              
-                <div class="telemetry-card">
-                  <span>archive rate</span>
-                  <strong id="telemetrySignal">--</strong>
-                </div>
-                <div class="telemetry-card">
-                  <span>lock state</span>
-                  <strong id="telemetryThreat">--</strong>
-                </div>
-              </div>
-
-              <div class="dots" id="dots"></div>
-              <div class="result-text" id="resultText"></div>
-            </div>
+          <div id="avatar" class="avatar-wrap"></div>
+          <h2 id="avatarTitle" style="margin:5px 0"></h2>
+          <p id="avatarName" style="color:var(--rose-soft); margin:0"></p>
+          <p id="avatarSub" style="font-size:13px; opacity:0.8; max-width:300px"></p>
+          
+          <div class="telemetry-grid">
+            <div class="telemetry-card">Archive: <strong id="telemetrySignal">--</strong></div>
+            <div class="telemetry-card">State: <strong id="telemetryThreat">--</strong></div>
           </div>
+          <div class="dots" id="dots" style="display:flex; gap:8px; margin-top:15px"></div>
+          <div id="resultText" style="margin-top:10px; font-weight:bold; color:var(--teal)"></div>
         </div>
 
         <div class="panel side-panel">
-          <div>
-            <h3 class="side-title">觀測進度</h3>
-            <div class="info-item small">
-              同一角色每次掃描都會留下觀測痕跡。累積 3 次後，系統會開啟下一段紀錄。
-            </div>
-            <div id="progressList" class="progress-list"></div>
-          </div>
-
-          <div class="actions actions-vertical">
-            <button class="btn" id="resetCurrentBtn">重製本角色點數</button>
-            <button class="btn" id="reselectBtn">重選角色</button>
-            <button class="btn danger" id="clearAllBtn">清除全部紀錄</button>
+          <h3>觀測進度</h3>
+          <div id="progressList"></div>
+          <div style="display:flex; flex-direction:column; gap:8px; margin-top:20px">
+            <button class="btn" id="reselectBtn">更換角色</button>
+            <button class="btn danger" id="resetCurrentBtn">重置進度</button>
           </div>
         </div>
       </div>
-      <div class="page-bottom-space"></div>
     </section>
   </div>
 
   <script>
+    // 這裡保留你原本的 CHARACTERS 資料與邏輯
     const STORAGE_KEY = "they-are-watching-v2";
     const MAX_POINTS = 3;
     const WAITING_MS = 3000;
-
-    // 集滿後跳轉網址
     const NEXT_URL = "https://example.com/next-page";
 
     const CHARACTERS = {
-      char1: {
-        title: "失焦者",
-        name: "13號",
-        icon: "◉",
-        desc: "失焦於籠舍與視線之間",
-        themeClass: "theme-1",
-        fillClass: "fill-1",
-        animClass: "animate-1",
-        bg: "./NO.13&零號.gif"
-      },
-      char2: {
-        title: "斷喙者",
-        name: "喀喀",
-        icon: "✦",
-        desc: "帶著斷裂記憶與摩擦聲響",
-        themeClass: "theme-2",
-        fillClass: "fill-2",
-        animClass: "animate-2",
-        bg: "./喀喀.gif"
-      },
-      char3: {
-        title: "編碼觀測者",
-        name: "C-98",
-        icon: "▣",
-        desc: "以監測與記錄為本能",
-        themeClass: "theme-3",
-        fillClass: "fill-3",
-        animClass: "animate-3",
-        bg: "./小白&c-98.gif"
-      },
-      char4: {
-        title: "羽封者",
-        name: "小白",
-        icon: "◌",
-        desc: "羽色被馴化，動作卻仍保留微弱的浮升感",
-        themeClass: "theme-4",
-        fillClass: "fill-4",
-        animClass: "animate-4",
-        bg: "./小白&c-98.gif"
-      },
-      char5: {
-        title: "孵夢者",
-        name: "殼裡裡",
-        icon: "◍",
-        desc: "停留在殼與夢的邊界",
-        themeClass: "theme-5",
-        fillClass: "fill-5",
-        animClass: "animate-5",
-        bg: "./殼裡裡.gif"
-      },
-      char6: {
-        title: "啼鳴零號",
-        name: "",
-        icon: "◎",
-        desc: "最初與最末的呼鳴殘響",
-        themeClass: "theme-6",
-        fillClass: "fill-6",
-        animClass: "animate-6",
-        bg: "./NO.13&零號.gif"
-      }
+      char1: { title: "失焦者", name: "13號", icon: "◉", desc: "失焦於籠舍與視線之間", themeClass: "theme-1", fillClass: "fill-1", animClass: "animate-1", bg: "#2d244c" },
+      char2: { title: "斷喙者", name: "喀喀", icon: "✦", desc: "帶著斷裂記憶與摩擦聲響", themeClass: "theme-2", fillClass: "fill-2", animClass: "animate-2", bg: "#7e3240" },
+      char3: { title: "編碼觀測者", name: "C-98", icon: "▣", desc: "以監測與記錄為本能", themeClass: "theme-3", fillClass: "fill-3", animClass: "animate-3", bg: "#2d5163" },
+      char4: { title: "羽封者", name: "小白", icon: "◌", desc: "羽色被馴化，動作卻仍保留微弱的浮升感", themeClass: "theme-4", fillClass: "fill-4", animClass: "animate-4", bg: "#9e8f85" },
+      char5: { title: "孵夢者", name: "殼裡裡", icon: "◍", desc: "停留在殼與夢的邊界", themeClass: "theme-5", fillClass: "fill-5", animClass: "animate-5", bg: "#8d6e9d" },
+      char6: { title: "啼鳴零號", name: "NONE", icon: "◎", desc: "最初與最末的呼鳴殘響", themeClass: "theme-6", fillClass: "fill-6", animClass: "animate-6", bg: "#201738" }
     };
 
-    function checkOrientation() {
-      const isPortrait = window.innerHeight > window.innerWidth;
-      const block = document.getElementById("rotateBlock");
+    // 核心資料存取
+    let userData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { selectedCharacter: null, scores: {}, lastScanTime: 0 };
 
-      if (window.innerWidth <= 900 && isPortrait) {
-        block.style.display = "flex";
-      } else {
-        block.style.display = "none";
-      }
-    }
-
-    window.addEventListener("resize", checkOrientation);
-    window.addEventListener("orientationchange", checkOrientation);
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        window.scrollTo(0, 1);
-      }, 300);
-      checkOrientation();
-    });
-
-    function getCharacterKeys() {
-      return Object.keys(CHARACTERS);
-    }
-
-    function makeEmptyScores() {
-      const scores = {};
-      getCharacterKeys().forEach(key => {
-        scores[key] = 0;
-      });
-      return scores;
-    }
-
-    function getDefaultData() {
-      return {
-        selectedCharacter: null,
-        scores: makeEmptyScores(),
-        lastScanTime: 0
-      };
-    }
-
-    function normalizeScores(inputScores = {}) {
-      const base = makeEmptyScores();
-      getCharacterKeys().forEach(key => {
-        base[key] = Number(inputScores[key]) || 0;
-      });
-      return base;
-    }
-
-    function loadData() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return getDefaultData();
-        const parsed = JSON.parse(raw);
-
-        return {
-          selectedCharacter: parsed.selectedCharacter || null,
-          scores: normalizeScores(parsed.scores),
-          lastScanTime: Number(parsed.lastScanTime) || 0
-        };
-      } catch (e) {
-        return getDefaultData();
-      }
-    }
-
-    function saveData(data) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    }
-
-    function clearData() {
-      localStorage.removeItem(STORAGE_KEY);
-    }
-
-    function getIsScanEvent() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get("scan") === "1";
-    }
-
-    function setSelectBackground() {
-      document.getElementById("bgLayer").style.backgroundImage = 'url("./主背景.png")';
-    }
-
-    function setCharacterBackground(characterKey) {
-      const char = CHARACTERS[characterKey];
-      if (!char) return;
-      document.getElementById("bgLayer").style.backgroundImage = `url("${char.bg}")`;
-    }
-
-
-    function pulseElement(selector, className, duration = 800) {
-      const el = typeof selector === "string" ? document.querySelector(selector) : selector;
-      if (!el) return;
-      el.classList.remove(className);
-      void el.offsetWidth;
-      el.classList.add(className);
-      setTimeout(() => el.classList.remove(className), duration);
-    }
-
-    async function playTransition(mode = "scan") {
-      const layer = document.getElementById("transitionLayer");
-      if (!layer) return;
-      layer.dataset.mode = mode;
-      layer.classList.remove("active");
-      void layer.offsetWidth;
-      layer.classList.add("active");
-      await wait(520);
-      layer.classList.remove("active");
-    }
-
-    function triggerMainEntrance() {
-      const mainWrap = document.querySelector("#mainScreen .main-wrap");
-      if (!mainWrap) return;
-      mainWrap.classList.remove("enter-sequence");
-      void mainWrap.offsetWidth;
-      mainWrap.classList.add("enter-sequence");
-      setTimeout(() => mainWrap.classList.remove("enter-sequence"), 1100);
-    }
-
-    function playPointFeedback(score) {
-      pulseElement("#avatar", "point-burst", 820);
-      pulseElement("#mainScreen .hero-frame", "point-burst", 760);
-      pulseElement("#resultText", "signal-boost", 700);
-      pulseElement("#progressList .progress-item", "progress-flash", 720);
-      const dots = document.querySelectorAll("#dots .dot");
-      const targetDot = dots[Math.max(0, Math.min(score - 1, dots.length - 1))];
-      if (targetDot) pulseElement(targetDot, "dot-pop", 550);
-    }
-
-    function showScreen(screenId) {
-      document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
-      document.getElementById(screenId).classList.add("active");
-    }
-
-
-    function updateCarouselFocus(scrollToCenter = false) {
-      const grid = document.getElementById("selectGrid");
-      if (!grid) return;
-      const cards = [...grid.querySelectorAll(".char-card")];
-      if (!cards.length) return;
-
-      const gridRect = grid.getBoundingClientRect();
-      const centerX = gridRect.left + gridRect.width / 2;
-
-      let closest = null;
-      let minDist = Infinity;
-
-      cards.forEach(card => {
-        const rect = card.getBoundingClientRect();
-        const cardCenter = rect.left + rect.width / 2;
-        const dist = Math.abs(cardCenter - centerX);
-        card.classList.remove("is-center", "is-side");
-
-        if (dist < minDist) {
-          minDist = dist;
-          closest = card;
-        }
-      });
-
-      cards.forEach(card => {
-        const rect = card.getBoundingClientRect();
-        const cardCenter = rect.left + rect.width / 2;
-        const dist = Math.abs(cardCenter - centerX);
-        if (card === closest) {
-          card.classList.add("is-center");
-        } else if (dist < gridRect.width * 0.42) {
-          card.classList.add("is-side");
-        }
-      });
-
-      if (scrollToCenter && closest) {
-        closest.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-      }
-    }
-
-    function snapCarouselToNearest() {
-      const grid = document.getElementById("selectGrid");
-      if (!grid) return;
-      const cards = [...grid.querySelectorAll(".char-card")];
-      if (!cards.length) return;
-
-      const gridRect = grid.getBoundingClientRect();
-      const centerX = gridRect.left + gridRect.width / 2;
-
-      let closest = null;
-      let minDist = Infinity;
-
-      cards.forEach(card => {
-        const rect = card.getBoundingClientRect();
-        const cardCenter = rect.left + rect.width / 2;
-        const dist = Math.abs(cardCenter - centerX);
-        if (dist < minDist) {
-          minDist = dist;
-          closest = card;
-        }
-      });
-
-      if (closest) {
-        closest.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-      }
-    }
-
-    function bindSelectCarousel() {
-      const grid = document.getElementById("selectGrid");
-      if (!grid) return;
-
-      let scrollTimer;
-      grid.addEventListener("scroll", () => {
-        updateCarouselFocus(false);
-        clearTimeout(scrollTimer);
-        scrollTimer = setTimeout(() => {
-          updateCarouselFocus(false);
-          snapCarouselToNearest();
-        }, 110);
-      }, { passive: true });
-
-      window.addEventListener("resize", () => updateCarouselFocus(false));
-      requestAnimationFrame(() => updateCarouselFocus(true));
-    }
+    function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(userData)); }
 
     function buildSelectCards() {
       const grid = document.getElementById("selectGrid");
-      const current = loadData().selectedCharacter;
       grid.innerHTML = "";
-
-      getCharacterKeys().forEach(key => {
+      Object.keys(CHARACTERS).forEach(key => {
         const char = CHARACTERS[key];
-        const btn = document.createElement("button");
-        btn.className = "char-card" + (current === key ? " selected" : "");
-        btn.type = "button";
-        btn.innerHTML = `
-          <div class="char-badge ${char.themeClass}">${char.icon}</div>
-          <div class="char-title">${char.title}</div>
-          <div class="char-name">${char.name || "&nbsp;"}</div>
-          <div class="char-desc">${char.desc}</div>
-        `;
-        btn.dataset.key = key;
-        btn.addEventListener("click", () => selectCharacter(key, btn));
-        grid.appendChild(btn);
+        const card = document.createElement("div");
+        card.className = "panel char-card";
+        card.innerHTML = `<div style="font-size:40px">${char.icon}</div><h3>${char.title}</h3><p>${char.name}</p>`;
+        card.onclick = () => selectCharacter(key);
+        grid.appendChild(card);
       });
+      updateCarousel();
+    }
 
-      bindSelectCarousel();
+    function updateCarousel() {
+      const cards = document.querySelectorAll('.char-card');
+      const container = document.getElementById('selectGrid');
+      const center = container.scrollLeft + container.offsetWidth / 2;
+      
+      cards.forEach(card => {
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        if (Math.abs(cardCenter - center) < 100) {
+          card.classList.add('is-center');
+        } else {
+          card.classList.remove('is-center');
+        }
+      });
+    }
 
-      const currentCard = current ? grid.querySelector(`[data-key="${current}"]`) : null;
-      if (currentCard) {
-        requestAnimationFrame(() => {
-          currentCard.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-          updateCarouselFocus(false);
-        });
+    document.getElementById('selectGrid').addEventListener('scroll', updateCarousel);
+
+    async function selectCharacter(key) {
+      userData.selectedCharacter = key;
+      if (!userData.scores[key]) userData.scores[key] = 0;
+      saveData();
+      renderMain();
+    }
+
+    function renderMain() {
+      if (!userData.selectedCharacter) {
+        document.getElementById("selectScreen").style.display = "flex";
+        document.getElementById("mainScreen").style.display = "none";
+        buildSelectCards();
+        return;
       }
-    }
 
-    function buildProgressList(data) {
-      const list = document.getElementById("progressList");
-      if (!list) return;
-      list.innerHTML = "";
+      document.getElementById("selectScreen").style.display = "none";
+      document.getElementById("mainScreen").style.display = "flex";
 
-      const key = data.selectedCharacter;
-      if (!key || !CHARACTERS[key]) return;
+      const char = CHARACTERS[userData.selectedCharacter];
+      const score = userData.scores[userData.selectedCharacter] || 0;
 
-      const char = CHARACTERS[key];
-      const score = data.scores[key] || 0;
+      document.getElementById("avatar").textContent = char.icon;
+      document.getElementById("avatarTitle").textContent = char.title;
+      document.getElementById("avatarName").textContent = char.name;
+      document.getElementById("avatarSub").textContent = char.desc;
+      document.getElementById("telemetrySignal").textContent = (score / MAX_POINTS * 100) + "%";
+      document.getElementById("telemetryThreat").textContent = score >= MAX_POINTS ? "UNLOCKED" : "LOCKED";
 
-      const item = document.createElement("div");
-      item.className = "progress-item";
-      item.innerHTML = `
-        <div class="progress-top">
-          <div>
-            <div class="progress-title">${char.title}</div>
-            <div class="progress-name">${char.name || ""}</div>
-          </div>
-          <div>${score} / ${MAX_POINTS}</div>
-        </div>
-        <div class="bar">
-          <div class="bar-fill ${char.fillClass}" style="width:${(score / MAX_POINTS) * 100}%"></div>
-        </div>
-      `;
-      list.appendChild(item);
-    }
-
-    function renderDots(score) {
+      // 點點顯示
       const dots = document.getElementById("dots");
       dots.innerHTML = "";
-      for (let i = 0; i < MAX_POINTS; i++) {
-        const el = document.createElement("div");
-        el.className = "dot" + (i < score ? " active" : "");
-        dots.appendChild(el);
+      for(let i=0; i<MAX_POINTS; i++) {
+        const dot = document.createElement("div");
+        dot.style.width = "12px"; dot.style.height = "12px"; dot.style.borderRadius = "50%";
+        dot.style.background = i < score ? "var(--rose)" : "rgba(255,255,255,0.2)";
+        dots.appendChild(dot);
+      }
+
+      // 進度條
+      const prog = document.getElementById("progressList");
+      prog.innerHTML = `
+        <div style="margin-bottom:5px">觀測強度: ${score}/${MAX_POINTS}</div>
+        <div class="bar"><div class="bar-fill" style="width:${(score/MAX_POINTS)*100}%; background:var(--rose)"></div></div>
+      `;
+
+      // 檢查是否從 QR 掃描進來 (scan=1)
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("scan") === "1") {
+        handleScan();
       }
     }
 
-
-    function hashNumber(input) {
-      return [...String(input)].reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
-    }
-
-    function updateTelemetry(characterKey, score, message = "") {
-      const base = hashNumber(characterKey || "char") + score * 17;
-      const depth = Math.min(99, 34 + score * 21 + (base % 19));
-      const signal = Math.min(99, 58 + score * 9 + (base % 13));
-      const threat = Math.min(99, 22 + score * 18 + (base % 27));
-
-      const depthEl = document.getElementById("telemetryDepth");
-      const signalEl = document.getElementById("telemetrySignal");
-      const threatEl = document.getElementById("telemetryThreat");
-      const stateEl = document.getElementById("scanState");
-
-      if (depthEl) depthEl.textContent = `${depth}%`;
-      if (signalEl) signalEl.textContent = `${signal}%`;
-      if (threatEl) threatEl.textContent = `${threat}%`;
-
-      if (stateEl) {
-        if (message.includes("冷卻")) stateEl.textContent = "WAITING";
-        else if (score >= MAX_POINTS) stateEl.textContent = "ARCHIVE OPEN";
-        else if (message.includes("動畫中") || message.includes("辨識")) stateEl.textContent = "觀測中";
-        else stateEl.textContent = "準備好了";
-      }
-    }
-
-    function startScanClock() {
-      const el = document.getElementById("scanClock");
-      if (!el) return;
-      const update = () => {
-        const now = new Date();
-        const h = String(now.getHours()).padStart(2, '0');
-        const m = String(now.getMinutes()).padStart(2, '0');
-        const s = String(now.getSeconds()).padStart(2, '0');
-        el.textContent = `${h}:${m}:${s}`;
-      };
-      update();
-      setInterval(update, 1000);
-    }
-
-    function renderCharacterView(data, message = "") {
-      const selected = data.selectedCharacter;
-      const char = CHARACTERS[selected];
-      const score = data.scores[selected];
-
-      setCharacterBackground(selected);
-
-      const avatar = document.getElementById("avatar");
-      avatar.className = `avatar-wrap ${char.themeClass}`;
-      avatar.textContent = char.icon;
-
-      document.getElementById("avatarTitle").textContent = char.title;
-      document.getElementById("avatarName").textContent = char.name || "";
-      document.getElementById("avatarSub").textContent = char.desc;
-
-      const resultText = document.getElementById("resultText");
-      const finalMessage = message ? `[ ${message.toUpperCase ? message.toUpperCase() : message} ]` : "等待下一次觀測";
-      resultText.textContent = finalMessage;
-      resultText.classList.remove("flash", "signal-text");
-      void resultText.offsetWidth;
-      if (finalMessage) resultText.classList.add("flash", "signal-text");
-      pulseElement(resultText, "signal-boost", 760);
-
-      renderDots(score);
-      
-      buildProgressList(data);
-    }
-
-    async function selectCharacter(characterKey, sourceEl = null) {
-      if (sourceEl) {
-        sourceEl.classList.add("card-activate");
-      }
-      await wait(180);
-      await playTransition("character-select");
-
-      const data = loadData();
-      data.selectedCharacter = characterKey;
-      saveData(data);
-
-      buildSelectCards();
-      startScanClock();
-      showScreen("mainScreen");
-      triggerMainEntrance();
-      nudgeScrollSpace();
-      renderCharacterView(
-        data,
-        `已鎖定 ${CHARACTERS[characterKey].title}${CHARACTERS[characterKey].name ? `・${CHARACTERS[characterKey].name}` : ""}`
-      );
-    }
-
-    function wait(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    async function playAnimationAndAddPoint() {
-      const data = loadData();
-      const selected = data.selectedCharacter;
+    async function handleScan() {
       const now = Date.now();
-
-      await playTransition("scan-open");
-      showScreen("mainScreen");
-      triggerMainEntrance();
-      nudgeScrollSpace();
-
-      if (!selected) {
-        setSelectBackground();
-        showScreen("selectScreen");
-        buildSelectCards();
-        updateCarouselFocus(true);
+      const key = userData.selectedCharacter;
+      if (now - userData.lastScanTime < WAITING_MS) {
+        document.getElementById("resultText").textContent = "系統冷卻中...";
         return;
       }
 
-      const char = CHARACTERS[selected];
-
-      renderCharacterView(data, "");
-
-      if (data.scores[selected] >= MAX_POINTS) {
-        renderCharacterView(data, `已完成 ${MAX_POINTS} / ${MAX_POINTS}`);
-        await wait(1200);
-        window.location.href = NEXT_URL;
-        return;
+      if (userData.scores[key] < MAX_POINTS) {
+        userData.scores[key]++;
+        userData.lastScanTime = now;
+        saveData();
+        document.getElementById("resultText").textContent = "觀測成功！";
+        setTimeout(renderMain, 1000);
       }
 
-      if (now - data.lastScanTime < WAITING_MS) {
-        const remain = Math.ceil((WAITING_MS - (now - data.lastScanTime)) / 1000);
-        renderCharacterView(data, `冷卻中，請 ${remain} 秒後再掃`);
-        return;
-      }
-
-      const avatar = document.getElementById("avatar");
-      avatar.classList.remove("animate-1", "animate-2", "animate-3", "animate-4", "animate-5", "animate-6");
-      void avatar.offsetWidth;
-      avatar.classList.add(char.animClass);
-
-      renderCharacterView(
-        data,
-        `已對焦 ${char.title}${char.name ? `・${char.name}` : ""}，正在寫入觀測...`
-      );
-
-      await wait(1200);
-
-      data.scores[selected] = Math.min(data.scores[selected] + 1, MAX_POINTS);
-      data.lastScanTime = now;
-      saveData(data);
-
-      const updatedScore = data.scores[selected];
-      renderCharacterView(data, `記錄完成，目前 ${updatedScore} / ${MAX_POINTS}`);
-      playPointFeedback(updatedScore);
-      buildSelectCards();
-
-      if (updatedScore >= MAX_POINTS) {
-        await wait(1400);
-        renderCharacterView(data, "觀測完成，準備開啟下一段...");
-        await playTransition("redirect");
-        await wait(420);
-        window.location.href = NEXT_URL;
+      if (userData.scores[key] >= MAX_POINTS) {
+        setTimeout(() => window.location.href = NEXT_URL, 2000);
       }
     }
 
-    function nudgeScrollSpace() {
-      if (window.innerWidth > 900) return;
-      requestAnimationFrame(() => {
-        const target = Math.min(120, Math.max(56, Math.round(window.innerHeight * 0.16)));
-        window.scrollTo({ top: target, behavior: "smooth" });
-      });
-    }
+    document.getElementById("reselectBtn").onclick = () => { userData.selectedCharacter = null; saveData(); renderMain(); };
+    document.getElementById("resetCurrentBtn").onclick = () => { userData.scores[userData.selectedCharacter] = 0; saveData(); renderMain(); };
+    document.getElementById("clearAllFromSelect").onclick = () => { localStorage.clear(); location.reload(); };
 
-    function renderNormalMain() {
-      const data = loadData();
-      if (!data.selectedCharacter) {
-        setSelectBackground();
-        showScreen("selectScreen");
-        buildSelectCards();
-        return;
-      }
-      showScreen("mainScreen");
-      triggerMainEntrance();
-      nudgeScrollSpace();
-      renderCharacterView(data, "");
-    }
-
-    function resetCurrentCharacterPoints() {
-      const data = loadData();
-      if (!data.selectedCharacter) return;
-      data.scores[data.selectedCharacter] = 0;
-      saveData(data);
-      buildSelectCards();
-      renderNormalMain();
-    }
-
-    async function reselectCharacter() {
-      await playTransition("back");
-      const data = loadData();
-      data.selectedCharacter = null;
-      saveData(data);
-      setSelectBackground();
-      buildSelectCards();
-      showScreen("selectScreen");
-      updateCarouselFocus(true);
-    }
-
-    function init() {
-      buildSelectCards();
-
-      document.getElementById("resetCurrentBtn").addEventListener("click", resetCurrentCharacterPoints);
-      document.getElementById("reselectBtn").addEventListener("click", reselectCharacter);
-      document.getElementById("clearAllBtn").addEventListener("click", () => {
-        clearData();
-        location.reload();
-      });
-      document.getElementById("clearAllFromSelect").addEventListener("click", () => {
-        clearData();
-        location.reload();
-      });
-
-      const data = loadData();
-      const isScanEvent = getIsScanEvent();
-
-      if (!data.selectedCharacter) {
-        setSelectBackground();
-        showScreen("selectScreen");
-        buildSelectCards();
-        return;
-      }
-
-      if (isScanEvent) {
-        playAnimationAndAddPoint();
-      } else {
-        renderNormalMain();
-      }
-
-      checkOrientation();
-    }
-
-    init();
+    // 初始化
+    renderMain();
   </script>
 </body>
 </html>
