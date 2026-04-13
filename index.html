@@ -73,7 +73,7 @@
       z-index: 2;
       width: 100%;
       min-height: 100dvh;
-      padding: 12px;
+      padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
       display: flex;
       align-items: center;
       justify-content: center;
@@ -90,33 +90,36 @@
     }
 
     .panel {
-      background: rgba(18, 16, 34, 0.56);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 24px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 14px 36px rgba(0,0,0,0.28);
+      background: rgba(18, 16, 34, 0.52);
+      border: 1px solid rgba(255,255,255,0.11);
+      border-radius: 22px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.24);
     }
 
     /* 選角頁 */
     .select-wrap {
       width: 100%;
-      padding: 18px;
+      padding: 14px;
       display: grid;
       grid-template-rows: auto 1fr auto;
-      gap: 14px;
-      min-height: calc(100dvh - 24px);
+      gap: 10px;
+      min-height: calc(100dvh - 16px);
+      max-height: calc(100dvh - 16px);
+      overflow: hidden;
     }
 
     .title-box {
       text-align: center;
-      padding: 4px 8px 0;
+      padding: 0 8px;
     }
 
     .game-title {
       margin: 0;
-      font-size: clamp(24px, 3.4vw, 42px);
+      font-size: clamp(22px, 2.7vw, 36px);
       font-weight: 900;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
+      line-height: 1.1;
     }
 
     .game-subtitle {
@@ -130,21 +133,22 @@
     .select-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
+      gap: 10px;
       min-height: 0;
+      align-content: stretch;
     }
 
     .char-card {
       border: 1px solid rgba(255,255,255,0.12);
       background: rgba(255,255,255,0.06);
-      border-radius: 20px;
-      padding: 16px;
+      border-radius: 18px;
+      padding: 14px;
       cursor: pointer;
       transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      min-height: 148px;
+      min-height: 126px;
       text-align: left;
       color: #fff;
     }
@@ -162,41 +166,41 @@
     }
 
     .char-badge {
-      width: 58px;
-      height: 58px;
-      margin-bottom: 12px;
-      border-radius: 16px;
+      width: 52px;
+      height: 52px;
+      margin-bottom: 10px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 700;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.22);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.20);
     }
 
     .char-title {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 4px;
+      line-height: 1.16;
+      margin-bottom: 3px;
     }
 
     .char-name {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       color: rgba(255,255,255,0.88);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .char-desc {
-      font-size: 13px;
+      font-size: 12px;
       color: rgba(255,255,255,0.72);
-      line-height: 1.6;
+      line-height: 1.45;
     }
 
     .actions {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
       justify-content: center;
     }
@@ -205,7 +209,7 @@
       border: 1px solid rgba(255,255,255,0.14);
       background: rgba(255,255,255,0.08);
       color: white;
-      padding: 12px 16px;
+      padding: 11px 14px;
       border-radius: 14px;
       cursor: pointer;
       font-size: 14px;
@@ -230,14 +234,16 @@
     /* 主頁 */
     .main-wrap {
       width: 100%;
-      min-height: calc(100dvh - 24px);
+      min-height: calc(100dvh - 16px);
+      max-height: calc(100dvh - 16px);
       display: grid;
-      grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.92fr);
-      gap: 14px;
+      grid-template-columns: minmax(0, 1.65fr) minmax(250px, 0.85fr);
+      gap: 10px;
+      overflow: hidden;
     }
 
     .hero-panel {
-      padding: 18px;
+      padding: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -250,51 +256,51 @@
     }
 
     .avatar-wrap {
-      width: clamp(96px, 13vw, 144px);
-      height: clamp(96px, 13vw, 144px);
+      width: clamp(84px, 10vw, 124px);
+      height: clamp(84px, 10vw, 124px);
       margin: 0 auto;
-      border-radius: 28px;
+      border-radius: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: clamp(42px, 5vw, 60px);
+      font-size: clamp(34px, 4.1vw, 50px);
       box-shadow: 0 14px 30px rgba(0,0,0,0.30);
       position: relative;
       overflow: hidden;
     }
 
     .avatar-title {
-      margin-top: 14px;
-      font-size: clamp(24px, 3vw, 38px);
+      margin-top: 10px;
+      font-size: clamp(22px, 2.4vw, 32px);
       font-weight: 900;
-      line-height: 1.12;
+      line-height: 1.08;
     }
 
     .avatar-name {
-      margin-top: 4px;
-      font-size: clamp(15px, 2vw, 20px);
+      margin-top: 2px;
+      font-size: clamp(14px, 1.6vw, 18px);
       color: rgba(255,255,255,0.9);
       font-weight: 600;
     }
 
     .avatar-sub {
-      margin: 10px auto 0;
-      max-width: 560px;
-      line-height: 1.7;
+      margin: 8px auto 0;
+      max-width: 500px;
+      line-height: 1.55;
       color: rgba(255,255,255,0.82);
-      font-size: clamp(13px, 1.55vw, 15px);
+      font-size: clamp(12px, 1.2vw, 14px);
     }
 
     .dots {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin-top: 20px;
+      gap: 9px;
+      margin-top: 14px;
     }
 
     .dot {
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       border-radius: 999px;
       background: rgba(255,255,255,0.16);
       border: 1px solid rgba(255,255,255,0.15);
@@ -307,9 +313,9 @@
     }
 
     .result-text {
-      margin-top: 16px;
-      min-height: 28px;
-      font-size: clamp(16px, 2vw, 20px);
+      margin-top: 12px;
+      min-height: 24px;
+      font-size: clamp(15px, 1.5vw, 18px);
       font-weight: 800;
     }
 
@@ -323,38 +329,38 @@
     }
 
     .side-panel {
-      padding: 16px;
+      padding: 12px;
       overflow: auto;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 10px;
     }
 
     .side-title {
-      margin: 0 0 10px;
-      font-size: 18px;
+      margin: 0 0 8px;
+      font-size: 16px;
       font-weight: 800;
     }
 
     .info-item {
-      padding: 12px;
-      border-radius: 16px;
+      padding: 10px;
+      border-radius: 14px;
       background: rgba(0,0,0,0.18);
       border: 1px solid rgba(255,255,255,0.08);
-      line-height: 1.65;
-      font-size: 13px;
+      line-height: 1.5;
+      font-size: 12px;
       color: rgba(255,255,255,0.82);
     }
 
     .progress-list {
       display: grid;
-      gap: 10px;
-      margin-top: 12px;
+      gap: 8px;
+      margin-top: 10px;
     }
 
     .progress-item {
-      padding: 12px;
-      border-radius: 16px;
+      padding: 10px;
+      border-radius: 14px;
       background: rgba(0,0,0,0.18);
       border: 1px solid rgba(255,255,255,0.08);
     }
@@ -363,24 +369,24 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 8px;
+      gap: 8px;
+      margin-bottom: 6px;
     }
 
     .progress-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 800;
       line-height: 1.2;
     }
 
     .progress-name {
-      font-size: 12px;
+      font-size: 11px;
       color: rgba(255,255,255,0.72);
       margin-top: 2px;
     }
 
     .bar {
-      height: 8px;
+      height: 7px;
       border-radius: 999px;
       background: rgba(255,255,255,0.10);
       overflow: hidden;
@@ -397,15 +403,15 @@
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       margin-top: auto;
     }
 
     .actions-vertical .btn {
       width: 100%;
-      padding: 14px 16px;
-      font-size: 15px;
-      border-radius: 16px;
+      padding: 12px 14px;
+      font-size: 14px;
+      border-radius: 15px;
     }
 
     .small {
@@ -481,107 +487,338 @@
 
     /* 平板 */
     @media (max-width: 1024px) {
+      .select-wrap,
+      .main-wrap {
+        min-height: calc(100dvh - 14px);
+        max-height: calc(100dvh - 14px);
+      }
+
       .select-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
       }
 
       .main-wrap {
-        grid-template-columns: 1.35fr 0.95fr;
+        grid-template-columns: 1.3fr 0.9fr;
       }
     }
 
     /* 手機橫向 */
     @media (max-width: 900px) and (orientation: landscape) {
       .app {
-        padding: 10px;
+        padding: 8px;
       }
 
-      .select-wrap,
-      .main-wrap {
-        min-height: calc(100dvh - 20px);
+      .panel {
+        border-radius: 18px;
+      }
+
+      .select-wrap {
+        padding: 10px;
+        gap: 8px;
+      }
+
+      .title-box {
+        padding: 0 4px;
+      }
+
+      .game-title {
+        font-size: clamp(20px, 2.5vw, 28px);
       }
 
       .select-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
+        gap: 8px;
       }
 
       .char-card {
-        min-height: 128px;
-        padding: 12px;
+        min-height: 102px;
+        padding: 10px;
+        border-radius: 16px;
       }
 
       .char-badge {
-        width: 46px;
-        height: 46px;
-        font-size: 22px;
-        margin-bottom: 10px;
-        border-radius: 12px;
+        width: 42px;
+        height: 42px;
+        font-size: 20px;
+        margin-bottom: 8px;
+        border-radius: 11px;
       }
 
       .char-title {
-        font-size: 16px;
+        font-size: 15px;
       }
 
       .char-name {
-        font-size: 13px;
-        margin-bottom: 6px;
+        font-size: 12px;
+        margin-bottom: 4px;
       }
 
       .char-desc {
+        font-size: 11px;
+        line-height: 1.35;
+      }
+
+      .btn {
+        padding: 10px 12px;
+        font-size: 13px;
+      }
+
+      .main-wrap {
+        grid-template-columns: minmax(0, 1.55fr) minmax(220px, 0.82fr);
+        gap: 8px;
+      }
+
+      .hero-panel,
+      .side-panel {
+        padding: 10px;
+      }
+
+      .avatar-wrap {
+        width: 84px;
+        height: 84px;
+        font-size: 32px;
+        border-radius: 20px;
+      }
+
+      .avatar-title {
+        margin-top: 8px;
+        font-size: 24px;
+      }
+
+      .avatar-name {
+        font-size: 15px;
+      }
+
+      .avatar-sub {
+        margin-top: 6px;
+        max-width: 92%;
         font-size: 12px;
         line-height: 1.45;
       }
 
-      .main-wrap {
-        grid-template-columns: 1.45fr 0.95fr;
-        gap: 10px;
+      .dots {
+        gap: 8px;
+        margin-top: 12px;
       }
 
-      .hero-panel {
-        padding: 14px;
+      .dot {
+        width: 12px;
+        height: 12px;
       }
 
-      .side-panel {
-        padding: 12px;
+      .result-text {
+        margin-top: 10px;
+        min-height: 22px;
+        font-size: 14px;
       }
 
-      .avatar-sub {
-        max-width: 95%;
-        font-size: 13px;
-        line-height: 1.6;
+      .side-title {
+        font-size: 15px;
+        margin-bottom: 6px;
+      }
+
+      .info-item,
+      .progress-item {
+        padding: 9px;
+      }
+
+      .progress-list {
+        gap: 7px;
+        margin-top: 8px;
+      }
+
+      .actions-vertical {
+        gap: 7px;
       }
 
       .actions-vertical .btn {
-        padding: 12px 14px;
-        font-size: 14px;
+        padding: 10px 12px;
+        font-size: 13px;
       }
     }
 
     /* 更小的手機橫向 */
     @media (max-width: 760px) and (orientation: landscape) {
+      .select-wrap,
+      .main-wrap {
+        min-height: calc(100dvh - 12px);
+        max-height: calc(100dvh - 12px);
+      }
+
       .game-title {
-        font-size: 22px;
+        font-size: 18px;
       }
 
       .select-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .main-wrap {
-        grid-template-columns: 1fr 260px;
+      .char-card {
+        min-height: 94px;
       }
 
-      .avatar-title {
-        font-size: 22px;
+      .char-badge {
+        width: 38px;
+        height: 38px;
+        font-size: 18px;
+        margin-bottom: 6px;
       }
 
-      .avatar-name {
+      .char-title {
         font-size: 14px;
       }
 
+      .char-desc {
+        font-size: 10px;
+      }
+
+      .main-wrap {
+        grid-template-columns: minmax(0, 1fr) 210px;
+      }
+
+      .avatar-wrap {
+        width: 72px;
+        height: 72px;
+        font-size: 28px;
+      }
+
+      .avatar-title {
+        font-size: 20px;
+      }
+
+      .avatar-name {
+        font-size: 13px;
+      }
+
+      .avatar-sub {
+        font-size: 11px;
+      }
+
       .result-text {
-        font-size: 15px;
+        font-size: 13px;
+      }
+
+      .side-panel {
+        gap: 8px;
+      }
+
+      .side-title {
+        font-size: 14px;
+      }
+
+      .info-item {
+        font-size: 11px;
+      }
+
+      .progress-title {
+        font-size: 12px;
+      }
+
+      .progress-name,
+      .small {
+        font-size: 10px;
+      }
+
+      .actions-vertical .btn,
+      .btn {
+        font-size: 12px;
+      }
+    }
+
+    /* 非常扁的手機橫向 */
+    @media (max-height: 430px) and (orientation: landscape) {
+      .select-wrap,
+      .main-wrap {
+        min-height: calc(100dvh - 10px);
+        max-height: calc(100dvh - 10px);
+      }
+
+      .game-title {
+        font-size: 18px;
+      }
+
+      .select-wrap {
+        padding: 8px;
+        gap: 6px;
+      }
+
+      .char-card {
+        min-height: 82px;
+        padding: 8px;
+      }
+
+      .char-badge {
+        width: 34px;
+        height: 34px;
+        font-size: 16px;
+        margin-bottom: 5px;
+      }
+
+      .char-title {
+        font-size: 13px;
+      }
+
+      .char-name,
+      .char-desc,
+      .info-item,
+      .result-text,
+      .actions-vertical .btn,
+      .btn {
+        font-size: 11px;
+      }
+
+      .main-wrap {
+        grid-template-columns: minmax(0, 1fr) 200px;
+      }
+
+      .hero-panel,
+      .side-panel {
+        padding: 8px;
+      }
+
+      .avatar-wrap {
+        width: 64px;
+        height: 64px;
+        font-size: 24px;
+        border-radius: 16px;
+      }
+
+      .avatar-title {
+        margin-top: 6px;
+        font-size: 18px;
+      }
+
+      .avatar-name {
+        font-size: 12px;
+      }
+
+      .avatar-sub {
+        margin-top: 4px;
+        font-size: 10px;
+        line-height: 1.35;
+      }
+
+      .dots {
+        margin-top: 8px;
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+      }
+
+      .side-title {
+        font-size: 13px;
+      }
+
+      .progress-item,
+      .info-item {
+        padding: 7px;
+      }
+
+      .actions-vertical .btn {
+        padding: 8px 10px;
       }
     }
 
