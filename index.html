@@ -2,23 +2,27 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>牠們在看｜角色集點系統</title>
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     html, body {
-  margin: 0;
-  width: 100%;
-  min-height: 100%;
-  font-family: "Noto Sans TC", Arial, sans-serif;
-  color: #fff;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      font-family: "Noto Sans TC", Arial, sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+      overflow-y: auto;
+      background: #000;
+    }
 
     body {
-      background: #000;
+      min-height: 100dvh;
     }
 
     #bgLayer {
@@ -35,26 +39,49 @@
     #bgOverlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.32);
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.18),
+        rgba(0,0,0,0.42)
+      );
       z-index: 1;
       pointer-events: none;
     }
 
+    #rotateBlock {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.96);
+      color: white;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .rotate-text {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      line-height: 1.6;
+    }
+
     .app {
-  position: relative;
-  z-index: 2;
-  width: 100vw;
-  min-height: 120vh;
-  padding: 22px;
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-}
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      min-height: 100dvh;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
     .screen {
       width: 100%;
-      height: 100%;
-      max-width: 1600px;
+      max-width: 1400px;
       display: none;
     }
 
@@ -63,116 +90,108 @@
     }
 
     .panel {
-      background: rgba(15, 12, 30, 0.42);
-      border: 1px solid rgba(255,255,255,0.14);
-      border-radius: 28px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+      background: rgba(18, 16, 34, 0.56);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 14px 36px rgba(0,0,0,0.28);
     }
 
+    /* 選角頁 */
     .select-wrap {
       width: 100%;
-      height: 100%;
-      padding: 28px;
+      padding: 18px;
       display: grid;
       grid-template-rows: auto 1fr auto;
-      gap: 20px;
+      gap: 14px;
+      min-height: calc(100dvh - 24px);
     }
 
     .title-box {
       text-align: center;
-      padding: 10px 16px 0;
+      padding: 4px 8px 0;
     }
 
     .game-title {
       margin: 0;
-      font-size: clamp(32px, 5vw, 54px);
+      font-size: clamp(24px, 3.4vw, 42px);
       font-weight: 900;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
     }
 
     .game-subtitle {
-      margin: 12px auto 0;
+      margin: 10px auto 0;
       max-width: 860px;
-      line-height: 1.8;
-      color: rgba(255,255,255,0.86);
-      font-size: 15px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.84);
+      font-size: 14px;
     }
 
     .select-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
       min-height: 0;
     }
 
-    @media (max-width: 1100px) {
-      .select-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 760px) {
-      .app {
-        padding: 14px;
-      }
-
-      .select-grid {
-        grid-template-columns: 1fr;
-        overflow: auto;
-      }
-    }
-
     .char-card {
-      border: 1px solid rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.12);
       background: rgba(255,255,255,0.06);
-      border-radius: 24px;
-      padding: 18px;
+      border-radius: 20px;
+      padding: 16px;
       cursor: pointer;
-      transition: transform 0.22s ease, background 0.22s ease, border-color 0.22s ease;
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      min-height: 180px;
+      min-height: 148px;
+      text-align: left;
+      color: #fff;
     }
 
     .char-card:hover {
-      transform: translateY(-4px);
-      background: rgba(255,255,255,0.1);
+      transform: translateY(-3px);
+      background: rgba(255,255,255,0.10);
       border-color: rgba(255,255,255,0.22);
     }
 
+    .char-card.selected {
+      border-color: rgba(255,255,255,0.34);
+      background: rgba(255,255,255,0.13);
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.06) inset;
+    }
+
     .char-badge {
-      width: 74px;
-      height: 74px;
-      margin-bottom: 16px;
-      border-radius: 18px;
+      width: 58px;
+      height: 58px;
+      margin-bottom: 12px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 34px;
+      font-size: 28px;
       font-weight: 700;
-      box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.22);
     }
 
     .char-title {
-      font-size: 24px;
+      font-size: 20px;
       font-weight: 800;
       line-height: 1.2;
       margin-bottom: 4px;
     }
 
     .char-name {
-      font-size: 18px;
+      font-size: 15px;
       font-weight: 600;
       color: rgba(255,255,255,0.88);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .char-desc {
-      font-size: 14px;
+      font-size: 13px;
       color: rgba(255,255,255,0.72);
-      line-height: 1.7;
+      line-height: 1.6;
     }
 
     .actions {
@@ -183,35 +202,42 @@
     }
 
     .btn {
-      border: 1px solid rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.14);
       background: rgba(255,255,255,0.08);
       color: white;
-      padding: 11px 16px;
+      padding: 12px 16px;
       border-radius: 14px;
       cursor: pointer;
       font-size: 14px;
+      font-weight: 700;
+      transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
     }
 
     .btn:hover {
       background: rgba(255,255,255,0.14);
+      transform: translateY(-1px);
     }
 
+    .btn.danger {
+      background: rgba(138, 43, 63, 0.28);
+      border-color: rgba(255,255,255,0.12);
+    }
+
+    .btn.danger:hover {
+      background: rgba(160, 48, 73, 0.38);
+    }
+
+    /* 主頁 */
     .main-wrap {
       width: 100%;
-      height: 100%;
+      min-height: calc(100dvh - 24px);
       display: grid;
-      grid-template-columns: 1.8fr 1fr;
-      gap: 20px;
-    }
-
-    @media (max-width: 980px) {
-      .main-wrap {
-        grid-template-columns: 1fr;
-      }
+      grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.92fr);
+      gap: 14px;
     }
 
     .hero-panel {
-      padding: 28px;
+      padding: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -224,51 +250,51 @@
     }
 
     .avatar-wrap {
-      width: 160px;
-      height: 160px;
+      width: clamp(96px, 13vw, 144px);
+      height: clamp(96px, 13vw, 144px);
       margin: 0 auto;
-      border-radius: 36px;
+      border-radius: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 64px;
-      box-shadow: 0 18px 45px rgba(0,0,0,0.35);
+      font-size: clamp(42px, 5vw, 60px);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.30);
       position: relative;
       overflow: hidden;
     }
 
     .avatar-title {
-      margin-top: 18px;
-      font-size: clamp(28px, 4vw, 42px);
+      margin-top: 14px;
+      font-size: clamp(24px, 3vw, 38px);
       font-weight: 900;
-      line-height: 1.15;
+      line-height: 1.12;
     }
 
     .avatar-name {
-      margin-top: 6px;
-      font-size: 20px;
+      margin-top: 4px;
+      font-size: clamp(15px, 2vw, 20px);
       color: rgba(255,255,255,0.9);
       font-weight: 600;
     }
 
     .avatar-sub {
-      margin: 12px auto 0;
-      max-width: 620px;
-      line-height: 1.8;
-      color: rgba(255,255,255,0.8);
-      font-size: 15px;
+      margin: 10px auto 0;
+      max-width: 560px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.82);
+      font-size: clamp(13px, 1.55vw, 15px);
     }
 
     .dots {
       display: flex;
       justify-content: center;
-      gap: 12px;
-      margin-top: 24px;
+      gap: 10px;
+      margin-top: 20px;
     }
 
     .dot {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       border-radius: 999px;
       background: rgba(255,255,255,0.16);
       border: 1px solid rgba(255,255,255,0.15);
@@ -277,13 +303,13 @@
 
     .dot.active {
       background: #fff;
-      transform: scale(1.12);
+      transform: scale(1.1);
     }
 
     .result-text {
-      margin-top: 18px;
-      min-height: 30px;
-      font-size: 20px;
+      margin-top: 16px;
+      min-height: 28px;
+      font-size: clamp(16px, 2vw, 20px);
       font-weight: 800;
     }
 
@@ -297,36 +323,38 @@
     }
 
     .side-panel {
-      padding: 24px;
+      padding: 16px;
       overflow: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
 
     .side-title {
-      margin: 0 0 14px;
-      font-size: 24px;
+      margin: 0 0 10px;
+      font-size: 18px;
       font-weight: 800;
     }
 
     .info-item {
-      padding: 14px;
-      border-radius: 18px;
+      padding: 12px;
+      border-radius: 16px;
       background: rgba(0,0,0,0.18);
       border: 1px solid rgba(255,255,255,0.08);
-      margin-bottom: 12px;
-      line-height: 1.7;
-      font-size: 14px;
-      color: rgba(255,255,255,0.84);
+      line-height: 1.65;
+      font-size: 13px;
+      color: rgba(255,255,255,0.82);
     }
 
     .progress-list {
-      margin-top: 18px;
       display: grid;
-      gap: 12px;
+      gap: 10px;
+      margin-top: 12px;
     }
 
     .progress-item {
-      padding: 14px;
-      border-radius: 18px;
+      padding: 12px;
+      border-radius: 16px;
       background: rgba(0,0,0,0.18);
       border: 1px solid rgba(255,255,255,0.08);
     }
@@ -335,23 +363,24 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 10px;
+      gap: 10px;
+      margin-bottom: 8px;
     }
 
     .progress-title {
+      font-size: 14px;
       font-weight: 800;
       line-height: 1.2;
     }
 
     .progress-name {
-      font-size: 13px;
+      font-size: 12px;
       color: rgba(255,255,255,0.72);
       margin-top: 2px;
     }
 
     .bar {
-      height: 10px;
+      height: 8px;
       border-radius: 999px;
       background: rgba(255,255,255,0.10);
       overflow: hidden;
@@ -364,8 +393,23 @@
       transition: width 0.35s ease;
     }
 
+    .actions-vertical {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .actions-vertical .btn {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 15px;
+      border-radius: 16px;
+    }
+
     .small {
-      font-size: 13px;
+      font-size: 12px;
       color: rgba(255,255,255,0.66);
     }
 
@@ -434,49 +478,129 @@
       55%  { transform: translateY(-8px) scaleY(1.08); }
       100% { transform: translateY(0) scaleY(1); opacity: 1; }
     }
-    .side-panel-minimal {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.actions-vertical {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
+    /* 平板 */
+    @media (max-width: 1024px) {
+      .select-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
 
-.actions-vertical .btn {
-  width: 100%;
-  padding: 16px 18px;
-  font-size: 16px;
-  border-radius: 18px;
-}
-#rotateBlock {
-  position: fixed;
-  inset: 0;
-  background: #000;
-  color: white;
-  z-index: 9999;
+      .main-wrap {
+        grid-template-columns: 1.35fr 0.95fr;
+      }
+    }
 
-  display: none;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
+    /* 手機橫向 */
+    @media (max-width: 900px) and (orientation: landscape) {
+      .app {
+        padding: 10px;
+      }
 
-.rotate-text {
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: 2px;
-}
+      .select-wrap,
+      .main-wrap {
+        min-height: calc(100dvh - 20px);
+      }
+
+      .select-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .char-card {
+        min-height: 128px;
+        padding: 12px;
+      }
+
+      .char-badge {
+        width: 46px;
+        height: 46px;
+        font-size: 22px;
+        margin-bottom: 10px;
+        border-radius: 12px;
+      }
+
+      .char-title {
+        font-size: 16px;
+      }
+
+      .char-name {
+        font-size: 13px;
+        margin-bottom: 6px;
+      }
+
+      .char-desc {
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .main-wrap {
+        grid-template-columns: 1.45fr 0.95fr;
+        gap: 10px;
+      }
+
+      .hero-panel {
+        padding: 14px;
+      }
+
+      .side-panel {
+        padding: 12px;
+      }
+
+      .avatar-sub {
+        max-width: 95%;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .actions-vertical .btn {
+        padding: 12px 14px;
+        font-size: 14px;
+      }
+    }
+
+    /* 更小的手機橫向 */
+    @media (max-width: 760px) and (orientation: landscape) {
+      .game-title {
+        font-size: 22px;
+      }
+
+      .select-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .main-wrap {
+        grid-template-columns: 1fr 260px;
+      }
+
+      .avatar-title {
+        font-size: 22px;
+      }
+
+      .avatar-name {
+        font-size: 14px;
+      }
+
+      .result-text {
+        font-size: 15px;
+      }
+    }
+
+    /* 手機直向提示旋轉 */
+    @media (max-width: 900px) and (orientation: portrait) {
+      .app {
+        visibility: hidden;
+      }
+
+      #rotateBlock {
+        display: flex;
+      }
+    }
   </style>
 </head>
 <body>
   <div id="rotateBlock">
-  <div class="rotate-text">請將手機橫向觀看</div>
-</div>
+    <div class="rotate-text">請將手機橫向觀看</div>
+  </div>
 
   <div id="bgLayer"></div>
   <div id="bgOverlay"></div>
@@ -487,15 +611,14 @@
       <div class="panel select-wrap">
         <div class="title-box">
           <h1 class="game-title">請選擇角色</h1>
-                 </div>
+        </div>
 
         <div class="select-grid" id="selectGrid"></div>
 
         <div class="actions">
-          <button class="btn" id="clearAllFromSelect">清除全部紀錄</button>
+          <button class="btn danger" id="clearAllFromSelect">清除全部紀錄</button>
         </div>
       </div>
-     
     </section>
 
     <!-- 主頁 -->
@@ -513,16 +636,25 @@
           </div>
         </div>
 
-       <div class="panel side-panel side-panel-minimal">
-  <div class="actions actions-vertical">
-    <button class="btn" id="resetCurrentBtn">重製本角色點數</button>
-    <button class="btn" id="reselectBtn">重選角色</button>
-    <button class="btn" id="clearAllBtn">清除全部紀錄</button>
-  </div>
-</div>
+        <div class="panel side-panel">
+          <div>
+            <h3 class="side-title">角色進度</h3>
+            <div class="info-item small">
+              掃描同一角色 QR code 可累積點數，集滿後會前往下一頁。
+            </div>
+            <div id="progressList" class="progress-list"></div>
+          </div>
+
+          <div class="actions actions-vertical">
+            <button class="btn" id="resetCurrentBtn">重製本角色點數</button>
+            <button class="btn" id="reselectBtn">重選角色</button>
+            <button class="btn danger" id="clearAllBtn">清除全部紀錄</button>
+          </div>
+        </div>
+      </div>
     </section>
   </div>
-  
+
   <script>
     const STORAGE_KEY = "they-are-watching-v2";
     const MAX_POINTS = 3;
@@ -531,7 +663,6 @@
     // 集滿後跳轉網址
     const NEXT_URL = "https://example.com/next-page";
 
-    // 之後要改角色名稱、背景、描述，改這裡就好
     const CHARACTERS = {
       char1: {
         title: "失焦者",
@@ -594,25 +725,27 @@
         bg: "./NO.13&零號.gif"
       }
     };
+
     function checkOrientation() {
-  const isPortrait = window.innerHeight > window.innerWidth;
-  const block = document.getElementById("rotateBlock");
+      const isPortrait = window.innerHeight > window.innerWidth;
+      const block = document.getElementById("rotateBlock");
 
-  if (isPortrait) {
-    block.style.display = "flex";
-  } else {
-    block.style.display = "none";
-  }
-}
+      if (window.innerWidth <= 900 && isPortrait) {
+        block.style.display = "flex";
+      } else {
+        block.style.display = "none";
+      }
+    }
 
-window.addEventListener("resize", checkOrientation);
-window.addEventListener("orientationchange", checkOrientation);
-window.addEventListener("load", () => {
-  setTimeout(() => {
-    window.scrollTo(0, 1);
-  }, 300);
-});
-checkOrientation();
+    window.addEventListener("resize", checkOrientation);
+    window.addEventListener("orientationchange", checkOrientation);
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        window.scrollTo(0, 1);
+      }, 300);
+      checkOrientation();
+    });
+
     function getCharacterKeys() {
       return Object.keys(CHARACTERS);
     }
@@ -687,12 +820,13 @@ checkOrientation();
 
     function buildSelectCards() {
       const grid = document.getElementById("selectGrid");
+      const current = loadData().selectedCharacter;
       grid.innerHTML = "";
 
       getCharacterKeys().forEach(key => {
         const char = CHARACTERS[key];
         const btn = document.createElement("button");
-        btn.className = "char-card";
+        btn.className = "char-card" + (current === key ? " selected" : "");
         btn.type = "button";
         btn.innerHTML = `
           <div class="char-badge ${char.themeClass}">${char.icon}</div>
@@ -707,7 +841,7 @@ checkOrientation();
 
     function buildProgressList(data) {
       const list = document.getElementById("progressList");
-      if (!list) return
+      if (!list) return;
       list.innerHTML = "";
 
       getCharacterKeys().forEach(key => {
@@ -742,7 +876,7 @@ checkOrientation();
       }
     }
 
-    function renderCharacterView(data, message = "", scanMessage = "") {
+    function renderCharacterView(data, message = "") {
       const selected = data.selectedCharacter;
       const char = CHARACTERS[selected];
       const score = data.scores[selected];
@@ -763,7 +897,6 @@ checkOrientation();
       void resultText.offsetWidth;
       if (message) resultText.classList.add("flash");
 
-     
       renderDots(score);
       buildProgressList(data);
     }
@@ -773,11 +906,11 @@ checkOrientation();
       data.selectedCharacter = characterKey;
       saveData(data);
 
+      buildSelectCards();
       showScreen("mainScreen");
       renderCharacterView(
         data,
-        `已選擇 ${CHARACTERS[characterKey].title}${CHARACTERS[characterKey].name ? `・${CHARACTERS[characterKey].name}` : ""}`,
-        "角色已綁定。下次再掃同一個 QR code，才會播放動畫並加點。"
+        `已選擇 ${CHARACTERS[characterKey].title}${CHARACTERS[characterKey].name ? `・${CHARACTERS[characterKey].name}` : ""}`
       );
     }
 
@@ -788,7 +921,6 @@ checkOrientation();
     async function playAnimationAndAddPoint() {
       const data = loadData();
       const selected = data.selectedCharacter;
-      const char = CHARACTERS[selected];
       const now = Date.now();
 
       showScreen("mainScreen");
@@ -796,21 +928,16 @@ checkOrientation();
       if (!selected) {
         setSelectBackground();
         showScreen("selectScreen");
+        buildSelectCards();
         return;
       }
 
-      renderCharacterView(
-        data,
-        "",
-        "已偵測到掃碼事件，準備播放動畫..."
-      );
+      const char = CHARACTERS[selected];
+
+      renderCharacterView(data, "");
 
       if (data.scores[selected] >= MAX_POINTS) {
-        renderCharacterView(
-          data,
-          `已完成 ${MAX_POINTS} / ${MAX_POINTS}`,
-          "已經集滿點數，將直接跳轉。"
-        );
+        renderCharacterView(data, `已完成 ${MAX_POINTS} / ${MAX_POINTS}`);
         await wait(1200);
         window.location.href = NEXT_URL;
         return;
@@ -818,11 +945,7 @@ checkOrientation();
 
       if (now - data.lastScanTime < COOLDOWN_MS) {
         const remain = Math.ceil((COOLDOWN_MS - (now - data.lastScanTime)) / 1000);
-        renderCharacterView(
-          data,
-          `冷卻中，請 ${remain} 秒後再掃`,
-          "為避免重複加點，系統暫時不加點。"
-        );
+        renderCharacterView(data, `冷卻中，請 ${remain} 秒後再掃`);
         return;
       }
 
@@ -833,8 +956,7 @@ checkOrientation();
 
       renderCharacterView(
         data,
-        "播放角色動畫中...",
-        `已辨識角色：${char.title}${char.name ? `・${char.name}` : ""}，動畫結束後將加 1 點。`
+        `已辨識 ${char.title}${char.name ? `・${char.name}` : ""}，播放動畫中...`
       );
 
       await wait(1200);
@@ -844,19 +966,12 @@ checkOrientation();
       saveData(data);
 
       const updatedScore = data.scores[selected];
-      renderCharacterView(
-        data,
-        `+1 點！目前 ${updatedScore} / ${MAX_POINTS}`,
-        "本次掃碼已成功加點。"
-      );
+      renderCharacterView(data, `+1 點！目前 ${updatedScore} / ${MAX_POINTS}`);
+      buildSelectCards();
 
       if (updatedScore >= MAX_POINTS) {
         await wait(1400);
-        renderCharacterView(
-          data,
-          "已集滿 3 點，準備跳轉...",
-          "完成條件已達成，即將前往下一頁。"
-        );
+        renderCharacterView(data, "已集滿 3 點，準備跳轉...");
         await wait(1200);
         window.location.href = NEXT_URL;
       }
@@ -867,14 +982,11 @@ checkOrientation();
       if (!data.selectedCharacter) {
         setSelectBackground();
         showScreen("selectScreen");
+        buildSelectCards();
         return;
       }
       showScreen("mainScreen");
-      renderCharacterView(
-        data,
-        "",
-        "這次不是掃碼事件，因此只顯示目前狀態。"
-      );
+      renderCharacterView(data, "");
     }
 
     function resetCurrentCharacterPoints() {
@@ -882,6 +994,7 @@ checkOrientation();
       if (!data.selectedCharacter) return;
       data.scores[data.selectedCharacter] = 0;
       saveData(data);
+      buildSelectCards();
       renderNormalMain();
     }
 
@@ -890,6 +1003,7 @@ checkOrientation();
       data.selectedCharacter = null;
       saveData(data);
       setSelectBackground();
+      buildSelectCards();
       showScreen("selectScreen");
     }
 
@@ -913,6 +1027,7 @@ checkOrientation();
       if (!data.selectedCharacter) {
         setSelectBackground();
         showScreen("selectScreen");
+        buildSelectCards();
         return;
       }
 
@@ -921,10 +1036,11 @@ checkOrientation();
       } else {
         renderNormalMain();
       }
+
+      checkOrientation();
     }
 
     init();
   </script>
- <div style="height: 120vh;"></div>
 </body>
 </html>
