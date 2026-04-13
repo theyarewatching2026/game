@@ -14,26 +14,24 @@
     :root {
       --ink: #2d244c;
       --violet: #4d3c78;
-      --violet-soft: #6a5a97;
       --rose: #a06a8c;
       --rose-soft: #c78ba2;
-      --cream: #efe8dd;
       --teal: #5fa7a5;
-      --orange: #d78a61;
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     html, body {
       margin: 0; padding: 0;
-      width: 100%; height: 100%;
+      width: 100%;
+      /* 關鍵：設定超過 100% 的高度以利捲動隱藏狀態列 */
+      min-height: 105dvh; 
       font-family: "Cubic11", "Noto Sans TC", Arial, sans-serif;
       color: #fff;
-      overflow-x: hidden;
       background: #000;
+      scroll-behavior: smooth;
     }
 
-    /* 背景層：控制切換 */
     #bgLayer {
       position: fixed; inset: 0;
       background-image: url("./主背景.png");
@@ -45,112 +43,104 @@
 
     #bgOverlay {
       position: fixed; inset: 0;
-      background: linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.7) 60%, rgba(0,0,0,0.9));
+      background: linear-gradient(180deg, rgba(0,0,0,0.3), rgba(0,0,0,0.8) 70%);
       z-index: 1; pointer-events: none;
     }
 
     .app {
       position: relative; z-index: 2;
-      width: 100%; min-height: 100dvh;
+      width: 100%;
       display: flex; flex-direction: column;
-      padding: 10px;
+      padding: 10px 10px 80px 10px; /* 底部留白讓使用者可以滑動 */
     }
 
     .screen { width: 100%; max-width: 1300px; margin: 0 auto; display: none; }
-    .screen.active { display: flex; flex-direction: column; animation: fadeIn 0.5s ease; }
+    .screen.active { display: flex; flex-direction: column; animation: fadeIn 0.4s ease; }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .panel {
-      background: rgba(30, 24, 52, 0.75);
+      background: rgba(30, 24, 52, 0.8);
       backdrop-filter: blur(15px);
-      border: 1px solid rgba(160, 106, 140, 0.2);
-      border-radius: 24px;
-      padding: 20px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+      border: 1px solid rgba(160, 106, 140, 0.3);
+      border-radius: 28px;
+      padding: 24px;
     }
 
-    /* 選角頁面旋轉木馬 */
-    .select-wrap { text-align: center; }
+    /* --- 選角旋轉木馬修正 --- */
     .select-grid {
-      display: flex; overflow-x: auto; gap: 15px;
-      padding: 30px 15%;
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding: 40px 0; /* 移除左右 padding 改用偽元素 */
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
     }
     .select-grid::-webkit-scrollbar { display: none; }
 
+    /* 關鍵修正：在前後加入空間，讓首尾角色能置中 */
+    .select-grid::before,
+    .select-grid::after {
+      content: "";
+      flex: 0 0 35%; /* 根據卡片寬度調整，確保首尾可置中 */
+    }
+
     .char-card {
-      flex: 0 0 260px; scroll-snap-align: center;
-      transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-      opacity: 0.4; transform: scale(0.85); cursor: pointer;
+      flex: 0 0 240px;
+      scroll-snap-align: center;
+      transition: all 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      opacity: 0.3; transform: scale(0.8);
+      cursor: pointer;
       text-align: center;
     }
-    .char-card.is-center { opacity: 1; transform: scale(1.05); border-color: var(--rose); }
+    .char-card.is-center { opacity: 1; transform: scale(1.05); }
 
     .char-badge {
-      width: 60px; height: 60px; margin: 0 auto 15px;
-      border-radius: 18px; display: flex; align-items: center; justify-content: center;
-      font-size: 30px; background: rgba(255,255,255,0.1);
+      width: 70px; height: 70px; margin: 0 auto 15px;
+      border-radius: 20px; display: flex; align-items: center; justify-content: center;
+      font-size: 32px; background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
-    /* 主頁佈局 */
+    /* --- 主頁佈局 --- */
     .main-wrap { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; }
     @media (min-width: 950px) {
-      .main-wrap { grid-template-columns: 1.3fr 0.7fr; height: 80dvh; }
+      .main-wrap { grid-template-columns: 1.2fr 0.8fr; }
     }
 
     .hero-panel {
       position: relative; overflow: hidden;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 400px;
     }
-
-    /* 原創特效：雷達與掃描線 */
-    .scanlines { position: absolute; inset: 0; background: repeating-linear-gradient(180deg, rgba(255,255,255,0.03) 0px, transparent 2px); pointer-events: none; }
-    .alert-ring {
-      position: absolute; width: 300px; height: 300px;
-      border: 1px solid rgba(160, 106, 140, 0.2); border-radius: 50%;
-      animation: radarPulse 4s infinite;
-    }
-    @keyframes radarPulse { 0% { transform: scale(0.8); opacity: 0; } 50% { opacity: 0.5; } 100% { transform: scale(1.5); opacity: 0; } }
 
     .avatar-wrap {
-      width: 140px; height: 140px; font-size: 60px;
-      border-radius: 30px; display: flex; align-items: center; justify-content: center;
+      width: 130px; height: 130px; font-size: 60px;
+      border-radius: 35px; display: flex; align-items: center; justify-content: center;
       margin-bottom: 20px; z-index: 3;
-      box-shadow: 0 0 30px rgba(160, 106, 140, 0.4);
-      transition: transform 0.3s ease;
+      box-shadow: 0 0 40px rgba(160, 106, 140, 0.4);
     }
 
-    /* 點數回饋動畫 */
-    .point-burst { animation: burst 0.6s ease; }
-    @keyframes burst { 0% { transform: scale(1); } 50% { transform: scale(1.2); filter: brightness(1.5); } 100% { transform: scale(1); } }
+    .telemetry-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 400px; margin-top: 20px; }
+    .telemetry-card { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 16px; font-size: 10px; }
+    .telemetry-card strong { display: block; font-size: 18px; color: var(--rose-soft); margin-top: 4px; }
 
-    /* 資訊卡片 */
-    .telemetry-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; max-width: 400px; margin-top: 15px; }
-    .telemetry-card { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 14px; font-size: 11px; text-transform: uppercase; }
-    .telemetry-card strong { display: block; font-size: 18px; color: var(--rose-soft); }
-
-    .progress-item { margin-bottom: 15px; }
-    .bar { height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; margin-top: 8px; }
-    .bar-fill { height: 100%; transition: width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .bar { height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; margin-top: 10px; }
+    .bar-fill { height: 100%; transition: width 0.8s ease; }
 
     .btn {
-      background: rgba(239, 232, 221, 0.1); border: 1px solid rgba(255,255,255,0.1);
-      color: white; padding: 14px; border-radius: 14px; font-weight: bold;
-      cursor: pointer; width: 100%; transition: 0.2s;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      color: white; padding: 16px; border-radius: 18px; font-weight: bold;
+      cursor: pointer; width: 100%; font-size: 14px;
     }
-    .btn:active { transform: scale(0.95); }
     .btn.danger { background: rgba(160, 106, 140, 0.3); border-color: var(--rose); }
 
-    .dot { width: 14px; height: 14px; border-radius: 50%; background: rgba(255,255,255,0.1); transition: 0.3s; }
-    .dot.active { background: var(--rose); box-shadow: 0 0 12px var(--rose); }
+    .dot { width: 15px; height: 15px; border-radius: 50%; background: rgba(255,255,255,0.1); }
+    .dot.active { background: var(--rose); box-shadow: 0 0 15px var(--rose); }
 
-    /* 響應式微調 */
-    @media (max-width: 600px) {
-      .avatar-wrap { width: 100px; height: 100px; font-size: 40px; }
-      .char-card { flex: 0 0 220px; }
-    }
+    /* 底部緩衝空間：幫助隱藏網址列 */
+    .page-bottom-spacer { height: 120px; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -159,48 +149,48 @@
 
   <div class="app">
     <section id="selectScreen" class="screen active">
-      <div class="panel select-wrap">
-        <h1 style="letter-spacing: 2px;">請選擇觀測角色</h1>
-        <p style="font-size: 12px; color: var(--rose-soft);">左右滑動切換</p>
+      <div class="panel select-wrap" style="text-align: center;">
+        <h1 style="letter-spacing: 3px; margin-bottom: 5px;">選擇觀測對象</h1>
+        <p style="font-size: 13px; color: var(--rose-soft); margin-bottom: 20px;">左右滑動進行對焦</p>
+        
         <div class="select-grid" id="selectGrid"></div>
-        <button class="btn danger" id="clearAllFromSelect" style="max-width: 200px; margin: 0 auto;">清除所有紀錄</button>
+        
+        <button class="btn danger" id="clearAllFromSelect" style="max-width: 220px; margin: 30px auto 0;">清除所有系統紀錄</button>
       </div>
     </section>
 
     <section id="mainScreen" class="screen">
       <div class="main-wrap">
         <div class="panel hero-panel">
-          <div class="scanlines"></div>
-          <div class="alert-ring"></div>
-          
           <div id="avatar" class="avatar-wrap"></div>
-          <h2 id="avatarTitle" style="margin: 0; font-size: 28px;"></h2>
-          <p id="avatarName" style="color: var(--rose-soft); margin: 5px 0; letter-spacing: 2px;"></p>
-          <p id="avatarSub" style="font-size: 13px; opacity: 0.7; max-width: 320px; line-height: 1.6;"></p>
+          <h2 id="avatarTitle" style="margin: 0; font-size: 30px;"></h2>
+          <p id="avatarName" style="color: var(--rose-soft); margin: 8px 0; letter-spacing: 3px; font-weight: bold;"></p>
+          <p id="avatarSub" style="font-size: 14px; opacity: 0.8; max-width: 340px; line-height: 1.7; text-align: center;"></p>
           
           <div class="telemetry-grid">
             <div class="telemetry-card">Archive Rate <strong id="telemetrySignal">--</strong></div>
             <div class="telemetry-card">Lock State <strong id="telemetryThreat">--</strong></div>
           </div>
 
-          <div id="dots" style="display: flex; gap: 10px; margin-top: 20px;"></div>
-          <div id="resultText" style="margin-top: 15px; font-size: 14px; color: var(--teal); height: 20px;"></div>
+          <div id="dots" style="display: flex; gap: 12px; margin-top: 25px;"></div>
+          <div id="resultText" style="margin-top: 20px; font-size: 14px; color: var(--teal); font-weight: bold;"></div>
         </div>
 
         <div class="panel side-panel" style="display: flex; flex-direction: column; justify-content: space-between;">
           <div>
-            <h3 style="margin-top: 0; border-left: 4px solid var(--rose); padding-left: 10px;">觀測紀錄</h3>
+            <h3 style="margin-top: 0;">觀測進度條</h3>
             <div id="progressList"></div>
-            <p style="font-size: 11px; opacity: 0.5; margin-top: 10px;">* 同一角色累計 3 次觀測後，將開啟下一段紀錄。</p>
           </div>
           
-          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
-            <button class="btn" id="reselectBtn">重新選擇角色</button>
-            <button class="btn danger" id="resetCurrentBtn">重置本角色點數</button>
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 30px;">
+            <button class="btn" id="reselectBtn">重新選擇對象</button>
+            <button class="btn danger" id="resetCurrentBtn">重置當前觀測點</button>
           </div>
         </div>
       </div>
     </section>
+
+    <div class="page-bottom-spacer"></div>
   </div>
 
   <script>
@@ -210,12 +200,12 @@
     const NEXT_URL = "https://example.com/next-page";
 
     const CHARACTERS = {
-      char1: { title: "失焦者", name: "13號", icon: "◉", desc: "失焦於籠舍與視線之間", fillClass: "fill-1", bg: "./NO.13&零號.gif" },
-      char2: { title: "斷喙者", name: "喀喀", icon: "✦", desc: "帶著斷裂記憶與摩擦聲響", fillClass: "fill-2", bg: "./喀喀.gif" },
-      char3: { title: "編碼觀測者", name: "C-98", icon: "▣", desc: "以監測與記錄為本能", fillClass: "fill-3", bg: "./小白&c-98.gif" },
-      char4: { title: "羽封者", name: "小白", icon: "◌", desc: "羽色被馴化，動作卻仍保留微弱的浮升感", fillClass: "fill-4", bg: "./小白&c-98.gif" },
-      char5: { title: "孵夢者", name: "殼裡裡", icon: "◍", desc: "停留在殼與夢的邊界", fillClass: "fill-5", bg: "./殼裡裡.gif" },
-      char6: { title: "啼鳴零號", name: "", icon: "◎", desc: "最初與最末的呼鳴殘響", fillClass: "fill-6", bg: "./NO.13&零號.gif" }
+      char1: { title: "失焦者", name: "13號", icon: "◉", desc: "失焦於籠舍與視線之間", bg: "./NO.13&零號.gif" },
+      char2: { title: "斷喙者", name: "喀喀", icon: "✦", desc: "帶著斷裂記憶與摩擦聲響", bg: "./喀喀.gif" },
+      char3: { title: "編碼觀測者", name: "C-98", icon: "▣", desc: "以監測與記錄為本能", bg: "./小白&c-98.gif" },
+      char4: { title: "羽封者", name: "小白", icon: "◌", desc: "羽色被馴化，動作卻仍保留微弱的浮升感", bg: "./小白&c-98.gif" },
+      char5: { title: "孵夢者", name: "殼裡裡", icon: "◍", desc: "停留在殼與夢的邊界", bg: "./殼裡裡.gif" },
+      char6: { title: "啼鳴零號", name: "NONE", icon: "◎", desc: "最初與最末的呼鳴殘響", bg: "./NO.13&零號.gif" }
     };
 
     let userData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { selectedCharacter: null, scores: {}, lastScanTime: 0 };
@@ -223,8 +213,7 @@
     function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(userData)); }
 
     function updateBackground(bgPath) {
-      const bgLayer = document.getElementById("bgLayer");
-      bgLayer.style.backgroundImage = bgPath ? `url("${bgPath}")` : 'url("./主背景.png")';
+      document.getElementById("bgLayer").style.backgroundImage = bgPath ? `url("${bgPath}")` : 'url("./主背景.png")';
     }
 
     function buildSelectCards() {
@@ -233,15 +222,16 @@
       Object.keys(CHARACTERS).forEach(key => {
         const char = CHARACTERS[key];
         const card = document.createElement("div");
-        card.className = "panel char-card";
+        card.className = "char-card";
         card.innerHTML = `
           <div class="char-badge">${char.icon}</div>
-          <div style="font-weight:bold; font-size:18px;">${char.title}</div>
-          <div style="font-size:12px; opacity:0.7;">${char.name}</div>
+          <div style="font-weight:bold; font-size:20px; margin-bottom:5px;">${char.title}</div>
+          <div style="font-size:13px; opacity:0.6;">${char.name}</div>
         `;
         card.onclick = () => selectCharacter(key);
         grid.appendChild(card);
       });
+      // 初始檢查置中
       setTimeout(updateCarousel, 100);
     }
 
@@ -249,18 +239,23 @@
       const container = document.getElementById('selectGrid');
       const cards = document.querySelectorAll('.char-card');
       const center = container.scrollLeft + container.offsetWidth / 2;
+      
       cards.forEach(card => {
         const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-        card.classList.toggle('is-center', Math.abs(cardCenter - center) < 100);
+        const dist = Math.abs(cardCenter - center);
+        card.classList.toggle('is-center', dist < 120);
       });
     }
-    document.getElementById('selectGrid').onscroll = updateCarousel;
+
+    document.getElementById('selectGrid').addEventListener('scroll', updateCarousel);
 
     function selectCharacter(key) {
       userData.selectedCharacter = key;
       if (!userData.scores[key]) userData.scores[key] = 0;
       saveData();
       renderMain();
+      // 選擇後自動滑回頂部，幫助收起網址列
+      window.scrollTo(0, 0);
     }
 
     function renderMain() {
@@ -295,13 +290,11 @@
       }
 
       document.getElementById("progressList").innerHTML = `
-        <div class="progress-item">
-          <div style="display:flex; justify-content:space-between; font-size:13px;">
-            <span>${char.title}</span>
-            <span>${score} / ${MAX_POINTS}</span>
-          </div>
-          <div class="bar"><div class="bar-fill" style="width:${(score/MAX_POINTS)*100}%; background:var(--rose);"></div></div>
+        <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:8px;">
+          <span>當前同步率</span>
+          <span>${score} / ${MAX_POINTS}</span>
         </div>
+        <div class="bar"><div class="bar-fill" style="width:${(score/MAX_POINTS)*100}%; background:var(--rose);"></div></div>
       `;
 
       if (new URLSearchParams(window.location.search).get("scan") === "1") handleScan();
@@ -310,37 +303,29 @@
     async function handleScan() {
       const now = Date.now();
       const key = userData.selectedCharacter;
-      const resText = document.getElementById("resultText");
-
       if (now - userData.lastScanTime < WAITING_MS) {
-        resText.textContent = "尚未冷卻，請稍後再試";
+        document.getElementById("resultText").textContent = "觀測頻率過高，請稍候...";
         return;
       }
-
       if (userData.scores[key] < MAX_POINTS) {
         userData.scores[key]++;
         userData.lastScanTime = now;
         saveData();
-        
-        const avatar = document.getElementById("avatar");
-        avatar.classList.add("point-burst");
-        resText.textContent = "觀測資料寫入中...";
-        
+        document.getElementById("resultText").textContent = "正在寫入觀測殘響...";
         setTimeout(() => {
-          avatar.classList.remove("point-burst");
           renderMain();
           window.history.replaceState({}, document.title, window.location.pathname);
           if (userData.scores[key] >= MAX_POINTS) {
-            resText.textContent = "解鎖完成，即將跳轉...";
+            document.getElementById("resultText").textContent = "解鎖完成，權限轉移中...";
             setTimeout(() => window.location.href = NEXT_URL, 1500);
           }
-        }, 1000);
+        }, 800);
       }
     }
 
     document.getElementById("reselectBtn").onclick = () => { userData.selectedCharacter = null; saveData(); renderMain(); };
     document.getElementById("resetCurrentBtn").onclick = () => { userData.scores[userData.selectedCharacter] = 0; saveData(); renderMain(); };
-    document.getElementById("clearAllFromSelect").onclick = () => { localStorage.clear(); location.reload(); };
+    document.getElementById("clearAllFromSelect").onclick = () => { if(confirm("確定要清除所有紀錄嗎？")) { localStorage.clear(); location.reload(); } };
 
     window.onload = renderMain;
   </script>
