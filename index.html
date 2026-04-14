@@ -74,7 +74,7 @@
     /* 背景層 */
     #bgLayer {
       position: fixed; inset: 0;
-      background-image: url("./主背景.png");
+      background-image: url("./主背景.PNG");
       background-size: cover;
       background-position: center;
       z-index: 0;
@@ -331,7 +331,7 @@
     function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(userData)); }
 
     function updateBackground(bgPath) {
-      document.getElementById("bgLayer").style.backgroundImage = bgPath ? `url("${bgPath}")` : 'url("./主背景.png")';
+      document.getElementById("bgLayer").style.backgroundImage = bgPath ? `url("${bgPath}")` : 'url("./主背景.PNG")';
     }
 
     function buildSelectCards() {
@@ -339,8 +339,8 @@
       Object.keys(CHARACTERS).forEach(key => {
         const char = CHARACTERS[key];
         const card = document.createElement("div"); card.className = "char-card";
-        const imgPath = `./${char.name}.png`;
-        card.innerHTML = `<div class="char-img-box"><img src="${imgPath}" alt="${char.title}" onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='"></div><div style="font-weight:bold; font-size:20px; margin-bottom:5px;">${char.name}</div><div style="font-size:13px; opacity:0.6;">${char.title}</div>`;
+        const imgPath = `./${char.name}.PNG`;
+        card.innerHTML = `<div class="char-img-box"><img src="${imgPath}" alt="${char.title}" onerror="this.src='data:image/PNG;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='"></div><div style="font-weight:bold; font-size:20px; margin-bottom:5px;">${char.name}</div><div style="font-size:13px; opacity:0.6;">${char.title}</div>`;
         card.onclick = () => selectCharacter(key); grid.appendChild(card);
       });
       setTimeout(updateCarousel, 100);
@@ -373,7 +373,7 @@
       const char = CHARACTERS[userData.selectedCharacter], score = userData.scores[userData.selectedCharacter] || 0;
       updateBackground(char.bg);
       const avatarBox = document.getElementById("avatar");
-      avatarBox.innerHTML = `<img src="./${char.name}.png" alt="${char.title}">`;
+      avatarBox.innerHTML = `<img src="./${char.name}.PNG" alt="${char.title}">`;
       document.getElementById("avatarTitle").textContent = char.name;
       document.getElementById("avatarName").textContent = char.title;
       document.getElementById("avatarSub").textContent = char.desc;
