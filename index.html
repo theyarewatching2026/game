@@ -74,7 +74,7 @@
     /* 背景層 */
     #bgLayer {
       position: fixed; inset: 0;
-      background-image: url("./主背景.PNG");
+      background-image: url("./主背景.png");
       background-size: cover;
       background-position: center;
       z-index: 0;
@@ -331,7 +331,7 @@
     function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(userData)); }
 
     function updateBackground(bgPath) {
-      document.getElementById("bgLayer").style.backgroundImage = bgPath ? `url("${bgPath}")` : 'url("./主背景.PNG")';
+      document.getElementById("bgLayer").style.backgroundImage = bgPath ? `url("${bgPath}")` : 'url("./主背景.png")';
     }
 
     function buildSelectCards() {
