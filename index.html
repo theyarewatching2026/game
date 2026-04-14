@@ -149,8 +149,26 @@
     .char-img-box img { width: 100%; height: 100%; object-fit: cover; }
 
     /* 主頁佈局 */
-    .main-wrap { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; }
-    @media (min-width: 950px) { .main-wrap { grid-template-columns: 1.2fr 0.8fr; } }
+    /* 預設：手機直向（上下） */
+.main-wrap { 
+  display: grid; 
+  grid-template-columns: 1fr; 
+  gap: 15px; 
+}
+
+/* 手機橫向 → 左右 */
+@media (orientation: landscape) and (max-width: 1024px) {
+  .main-wrap {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* 桌機 → 左右（原本保留） */
+@media (min-width: 1025px) {
+  .main-wrap {
+    grid-template-columns: 1.2fr 0.8fr;
+  }
+}
 
     .hero-panel {
       position: relative; overflow: hidden;
