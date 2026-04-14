@@ -24,14 +24,54 @@
     html, body {
       margin: 0; padding: 0;
       width: 100%;
-      /* 關鍵：設定超過 100% 的高度以利捲動隱藏狀態列 */
-      min-height: 105dvh; 
+      min-height: 110dvh;
       font-family: "Cubic11", "Noto Sans TC", Arial, sans-serif;
       color: #fff;
       background: #000;
       scroll-behavior: smooth;
     }
 
+    /* 敘事遮罩層 */
+    #narrativeOverlay, #dialogueOverlay {
+      position: fixed; inset: 0;
+      background: #000;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: opacity 1.5s ease;
+    }
+    
+    #dialogueOverlay {
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+    }
+
+    .typing-text {
+      font-size: 20px;
+      line-height: 2;
+      letter-spacing: 2px;
+      min-height: 1.2em;
+      white-space: pre-wrap;
+    }
+
+    .typing-cursor {
+      display: inline-block;
+      width: 10px;
+      height: 20px;
+      background: #fff;
+      margin-left: 5px;
+      animation: blink 0.8s infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* 背景層 */
     #bgLayer {
       position: fixed; inset: 0;
       background-image: url("./主背景.png");
@@ -51,7 +91,7 @@
       position: relative; z-index: 2;
       width: 100%;
       display: flex; flex-direction: column;
-      padding: 10px 10px 80px 10px; /* 底部留白讓使用者可以滑動 */
+      padding: 10px 10px 80px 10px;
     }
 
     .screen { width: 100%; max-width: 1300px; margin: 0 auto; display: none; }
@@ -60,31 +100,26 @@
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .panel {
-      background: rgba(30, 24, 52, 0.8);
+      background: rgba(30, 24, 52, 0.85);
       backdrop-filter: blur(15px);
       border: 1px solid rgba(160, 106, 140, 0.3);
       border-radius: 28px;
       padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
-    /* --- 選角旋轉木馬修正 --- */
+    /* 選角頁面 */
     .select-grid {
       display: flex;
       overflow-x: auto;
       gap: 20px;
-      padding: 40px 0; /* 移除左右 padding 改用偽元素 */
+      padding: 40px 0;
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
     }
     .select-grid::-webkit-scrollbar { display: none; }
-
-    /* 關鍵修正：在前後加入空間，讓首尾角色能置中 */
-    .select-grid::before,
-    .select-grid::after {
-      content: "";
-      flex: 0 0 35%; /* 根據卡片寬度調整，確保首尾可置中 */
-    }
+    .select-grid::before, .select-grid::after { content: ""; flex: 0 0 35%; }
 
     .char-card {
       flex: 0 0 240px;
@@ -96,65 +131,109 @@
     }
     .char-card.is-center { opacity: 1; transform: scale(1.05); }
 
-    .char-badge {
-      width: 70px; height: 70px; margin: 0 auto 15px;
-      border-radius: 20px; display: flex; align-items: center; justify-content: center;
-      font-size: 32px; background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.1);
+    /* --- 選角頁圖片卡片：直角 520*874 比例 --- */
+    .char-img-box {
+      width: 100px; 
+      height: 168px; 
+      margin: 0 auto 15px;
+      /* 核心修改：去掉圓角、背景和邊框 */
+      border-radius: 0; 
+      background: none;
+      border: none;
+      
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      /* 加上卡片陰影 */
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     }
+    .char-img-box img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* --- 主頁佈局 --- */
+    /* 主頁佈局 */
     .main-wrap { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; }
-    @media (min-width: 950px) {
-      .main-wrap { grid-template-columns: 1.2fr 0.8fr; }
-    }
+    @media (min-width: 950px) { .main-wrap { grid-template-columns: 1.2fr 0.8fr; } }
 
     .hero-panel {
       position: relative; overflow: hidden;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      min-height: 400px;
+      min-height: 480px;
     }
 
+    /* --- 主頁面圖片卡片：直角 520*874 比例 --- */
     .avatar-wrap {
-      width: 130px; height: 130px; font-size: 60px;
-      border-radius: 35px; display: flex; align-items: center; justify-content: center;
-      margin-bottom: 20px; z-index: 3;
-      box-shadow: 0 0 40px rgba(160, 106, 140, 0.4);
+      width: 160px; 
+      height: 269px; 
+      /* 核心修改：去掉圓角、背景和邊框 */
+      border-radius: 0;
+      background: none;
+      border: none;
+      
+      z-index: 3;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      /* 加強卡片陰影與光暈 */
+      box-shadow: 0 0 30px rgba(160, 106, 140, 0.3), 0 10px 20px rgba(0,0,0,0.6);
+    }
+    .avatar-wrap img { width: 100%; height: 100%; object-fit: cover; }
+
+    .telemetry-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 440px; margin-top: 20px; }
+    .telemetry-card { 
+      background: rgba(255,255,255,0.05); 
+      padding: 12px; 
+      border-radius: 16px; 
+      font-size: 10px; 
+      border: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 80px;
+    }
+    
+    .telemetry-card strong { 
+      display: block; 
+      font-size: 14px; 
+      color: var(--rose-soft); 
+      margin-top: 6px; 
+      line-height: 1.4;
+      letter-spacing: 1px;
     }
 
-    .telemetry-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 400px; margin-top: 20px; }
-    .telemetry-card { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 16px; font-size: 10px; }
-    .telemetry-card strong { display: block; font-size: 18px; color: var(--rose-soft); margin-top: 4px; }
-
-    .bar { height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; margin-top: 10px; }
-    .bar-fill { height: 100%; transition: width 0.8s ease; }
+    .bar { height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; margin-top: 10px; border: 1px solid rgba(255,255,255,0.05); }
+    .bar-fill { height: 100%; transition: width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
 
     .btn {
       background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
       color: white; padding: 16px; border-radius: 18px; font-weight: bold;
-      cursor: pointer; width: 100%; font-size: 14px;
+      cursor: pointer; width: 100%; font-size: 14px; transition: 0.2s;
     }
+    .btn:active { transform: scale(0.96); background: rgba(255,255,255,0.15); }
     .btn.danger { background: rgba(160, 106, 140, 0.3); border-color: var(--rose); }
 
-    .dot { width: 15px; height: 15px; border-radius: 50%; background: rgba(255,255,255,0.1); }
+    .dot { width: 15px; height: 15px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.05); }
     .dot.active { background: var(--rose); box-shadow: 0 0 15px var(--rose); }
 
-    /* 底部緩衝空間：幫助隱藏網址列 */
-    .page-bottom-spacer { height: 120px; pointer-events: none; }
+    .page-bottom-spacer { height: 150px; pointer-events: none; }
   </style>
 </head>
 <body>
+  <div id="narrativeOverlay">
+    <div class="typing-text" id="narrativeText"></div>
+  </div>
+
+  <div id="dialogueOverlay" onclick="dialogueSystem.next()">
+    <div class="typing-text" id="dialogueText"></div>
+    <p style="font-size: 12px; margin-top: 50px; opacity: 0.5;">[ 點擊畫面繼續 ]</p>
+  </div>
+
   <div id="bgLayer"></div>
   <div id="bgOverlay"></div>
 
   <div class="app">
     <section id="selectScreen" class="screen active">
       <div class="panel select-wrap" style="text-align: center;">
-        <h1 style="letter-spacing: 3px; margin-bottom: 5px;">選擇觀測對象</h1>
+        <h1 style="letter-spacing: 1px; margin-bottom: 5px;">請確認你的個體編號</h1>
         <p style="font-size: 13px; color: var(--rose-soft); margin-bottom: 20px;">左右滑動進行對焦</p>
-        
         <div class="select-grid" id="selectGrid"></div>
-        
         <button class="btn danger" id="clearAllFromSelect" style="max-width: 220px; margin: 30px auto 0;">清除所有系統紀錄</button>
       </div>
     </section>
@@ -163,25 +242,24 @@
       <div class="main-wrap">
         <div class="panel hero-panel">
           <div id="avatar" class="avatar-wrap"></div>
+          
           <h2 id="avatarTitle" style="margin: 0; font-size: 30px;"></h2>
           <p id="avatarName" style="color: var(--rose-soft); margin: 8px 0; letter-spacing: 3px; font-weight: bold;"></p>
           <p id="avatarSub" style="font-size: 14px; opacity: 0.8; max-width: 340px; line-height: 1.7; text-align: center;"></p>
           
           <div class="telemetry-grid">
-            <div class="telemetry-card">Archive Rate <strong id="telemetrySignal">--</strong></div>
-            <div class="telemetry-card">Lock State <strong id="telemetryThreat">--</strong></div>
+            <div class="telemetry-card">真相碎片已回收 <strong id="telemetrySignal">--</strong></div>
+            <div class="telemetry-card">有些資訊刻意被隱藏 <strong id="telemetryThreat">--</strong></div>
           </div>
-
           <div id="dots" style="display: flex; gap: 12px; margin-top: 25px;"></div>
-          <div id="resultText" style="margin-top: 20px; font-size: 14px; color: var(--teal); font-weight: bold;"></div>
+          <div id="resultText" style="margin-top: 20px; font-size: 14px; color: var(--teal); font-weight: bold; text-align: center; min-height: 1.2em;"></div>
         </div>
 
         <div class="panel side-panel" style="display: flex; flex-direction: column; justify-content: space-between;">
           <div>
-            <h3 style="margin-top: 0;">觀測進度條</h3>
+            <h3 style="margin-top: 0;">你正在接近真相</h3>
             <div id="progressList"></div>
           </div>
-          
           <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 30px;">
             <button class="btn" id="reselectBtn">重新選擇對象</button>
             <button class="btn danger" id="resetCurrentBtn">重置當前觀測點</button>
@@ -189,7 +267,6 @@
         </div>
       </div>
     </section>
-
     <div class="page-bottom-spacer"></div>
   </div>
 
@@ -200,12 +277,53 @@
     const NEXT_URL = "https://example.com/next-page";
 
     const CHARACTERS = {
-      char1: { title: "失焦者", name: "13號", icon: "◉", desc: "失焦於籠舍與視線之間", bg: "./NO.13&零號.gif" },
-      char2: { title: "斷喙者", name: "喀喀", icon: "✦", desc: "帶著斷裂記憶與摩擦聲響", bg: "./喀喀.gif" },
-      char3: { title: "編碼觀測者", name: "C-98", icon: "▣", desc: "以監測與記錄為本能", bg: "./小白&c-98.gif" },
-      char4: { title: "羽封者", name: "小白", icon: "◌", desc: "羽色被馴化，動作卻仍保留微弱的浮升感", bg: "./小白&c-98.gif" },
-      char5: { title: "孵夢者", name: "殼裡裡", icon: "◍", desc: "停留在殼與夢的邊界", bg: "./殼裡裡.gif" },
-      char6: { title: "啼鳴零號", name: "NONE", icon: "◎", desc: "最初與最末的呼鳴殘響", bg: "./NO.13&零號.gif" }
+      char1: { title: "失焦者", name: "NO.13", desc: "失焦於籠舍與視線之間", bg: "./NO.13&零號.gif" },
+      char2: { title: "斷喙者", name: "喀喀", desc: "帶著斷裂記憶與摩擦聲響", bg: "./喀喀.gif" },
+      char3: { title: "編碼觀測者", name: "C-98", desc: "以監測與記錄為本能", bg: "./小白&c-98.gif" },
+      char4: { title: "羽封者", name: "小白", desc: "羽色被馴化，動作卻仍保留微弱的浮升感", bg: "./小白&c-98.gif" },
+      char5: { title: "孵夢者", name: "殼裡裡", desc: "停留在殼與夢的邊界", bg: "./殼裡裡.gif" },
+      char6: { title: "啼者", name: "啼鳴零號", desc: "最初與最末的呼鳴殘響", bg: "./NO.13&零號.gif" }
+    };
+
+    // 打字機
+    const typewriter = (elementId, sentences, callback) => {
+      let sIdx = 0, cIdx = 0;
+      const el = document.getElementById(elementId);
+      const type = () => {
+        if (sIdx < sentences.length) {
+          if (cIdx < sentences[sIdx].length) {
+            el.innerHTML = sentences[sIdx].substring(0, cIdx + 1) + '<span class="typing-cursor"></span>';
+            cIdx++;
+            setTimeout(type, 100);
+          } else {
+            setTimeout(() => {
+              if (sIdx < sentences.length - 1) { sIdx++; cIdx = 0; type(); }
+              else if (callback) callback();
+            }, 1000);
+          }
+        }
+      };
+      type();
+    };
+
+    // 集點完成對話
+    const dialogueSystem = {
+      sentences: ["個體記憶解鎖", "你所看到的不是故事而是真實存在過的生活", "這就是牠們曾經經歷過的世界", "你是否也準備好看見牠們......?"],
+      current: 0,
+      start: function() { document.getElementById("dialogueOverlay").style.display = "flex"; this.current = 0; this.show(); },
+      show: function() {
+        const el = document.getElementById("dialogueText"); el.innerHTML = "";
+        let text = this.sentences[this.current], i = 0;
+        const t = setInterval(() => {
+          el.innerHTML = text.substring(0, i+1) + '<span class="typing-cursor"></span>';
+          i++; if (i >= text.length) clearInterval(t);
+        }, 80);
+      },
+      next: function() {
+        this.current++;
+        if (this.current < this.sentences.length) this.show();
+        else { document.getElementById("dialogueOverlay").style.opacity = "0"; setTimeout(() => window.location.href = NEXT_URL, 1500); }
+      }
     };
 
     let userData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { selectedCharacter: null, scores: {}, lastScanTime: 0 };
@@ -217,21 +335,14 @@
     }
 
     function buildSelectCards() {
-      const grid = document.getElementById("selectGrid");
-      grid.innerHTML = "";
+      const grid = document.getElementById("selectGrid"); grid.innerHTML = "";
       Object.keys(CHARACTERS).forEach(key => {
         const char = CHARACTERS[key];
-        const card = document.createElement("div");
-        card.className = "char-card";
-        card.innerHTML = `
-          <div class="char-badge">${char.icon}</div>
-          <div style="font-weight:bold; font-size:20px; margin-bottom:5px;">${char.title}</div>
-          <div style="font-size:13px; opacity:0.6;">${char.name}</div>
-        `;
-        card.onclick = () => selectCharacter(key);
-        grid.appendChild(card);
+        const card = document.createElement("div"); card.className = "char-card";
+        const imgPath = `./${char.name}.png`;
+        card.innerHTML = `<div class="char-img-box"><img src="${imgPath}" alt="${char.title}" onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='"></div><div style="font-weight:bold; font-size:20px; margin-bottom:5px;">${char.name}</div><div style="font-size:13px; opacity:0.6;">${char.title}</div>`;
+        card.onclick = () => selectCharacter(key); grid.appendChild(card);
       });
-      // 初始檢查置中
       setTimeout(updateCarousel, 100);
     }
 
@@ -239,53 +350,39 @@
       const container = document.getElementById('selectGrid');
       const cards = document.querySelectorAll('.char-card');
       const center = container.scrollLeft + container.offsetWidth / 2;
-      
       cards.forEach(card => {
         const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-        const dist = Math.abs(cardCenter - center);
-        card.classList.toggle('is-center', dist < 120);
+        card.classList.toggle('is-center', Math.abs(cardCenter - center) < 120);
       });
     }
-
     document.getElementById('selectGrid').addEventListener('scroll', updateCarousel);
 
     function selectCharacter(key) {
-      userData.selectedCharacter = key;
-      if (!userData.scores[key]) userData.scores[key] = 0;
-      saveData();
-      renderMain();
-      // 選擇後自動滑回頂部，幫助收起網址列
-      window.scrollTo(0, 0);
+      userData.selectedCharacter = key; if (!userData.scores[key]) userData.scores[key] = 0;
+      saveData(); renderMain(); window.scrollTo(0, 0);
     }
 
     function renderMain() {
       if (!userData.selectedCharacter) {
         document.getElementById("selectScreen").classList.add("active");
         document.getElementById("mainScreen").classList.remove("active");
-        updateBackground(null);
-        buildSelectCards();
-        return;
+        updateBackground(null); buildSelectCards(); return;
       }
-
       document.getElementById("selectScreen").classList.remove("active");
       document.getElementById("mainScreen").classList.add("active");
-
-      const char = CHARACTERS[userData.selectedCharacter];
-      const score = userData.scores[userData.selectedCharacter] || 0;
+      const char = CHARACTERS[userData.selectedCharacter], score = userData.scores[userData.selectedCharacter] || 0;
       updateBackground(char.bg);
-
-      document.getElementById("avatar").textContent = char.icon;
-      document.getElementById("avatarTitle").textContent = char.title;
-      document.getElementById("avatarName").textContent = char.name;
+      const avatarBox = document.getElementById("avatar");
+      avatarBox.innerHTML = `<img src="./${char.name}.png" alt="${char.title}">`;
+      document.getElementById("avatarTitle").textContent = char.name;
+      document.getElementById("avatarName").textContent = char.title;
       document.getElementById("avatarSub").textContent = char.desc;
       document.getElementById("telemetrySignal").textContent = Math.floor((score / MAX_POINTS) * 100) + "%";
-      document.getElementById("telemetryThreat").textContent = score >= MAX_POINTS ? "UNLOCKED" : "LOCKED";
+      document.getElementById("telemetryThreat").textContent = score >= MAX_POINTS ? "⚠你的記憶正在被改寫" : "⚠ 請不要相信所有記憶";
 
-      const dots = document.getElementById("dots");
-      dots.innerHTML = "";
+      const dots = document.getElementById("dots"); dots.innerHTML = "";
       for(let i=0; i<MAX_POINTS; i++) {
-        const dot = document.createElement("div");
-        dot.className = "dot" + (i < score ? " active" : "");
+        const dot = document.createElement("div"); dot.className = "dot" + (i < score ? " active" : "");
         dots.appendChild(dot);
       }
 
@@ -301,23 +398,16 @@
     }
 
     async function handleScan() {
-      const now = Date.now();
-      const key = userData.selectedCharacter;
-      if (now - userData.lastScanTime < WAITING_MS) {
-        document.getElementById("resultText").textContent = "觀測頻率過高，請稍候...";
-        return;
-      }
+      const now = Date.now(), key = userData.selectedCharacter, resText = document.getElementById("resultText");
+      if (now - userData.lastScanTime < WAITING_MS) { resText.textContent = "...這段記憶，不應該存在"; return; }
       if (userData.scores[key] < MAX_POINTS) {
-        userData.scores[key]++;
-        userData.lastScanTime = now;
-        saveData();
-        document.getElementById("resultText").textContent = "正在寫入觀測殘響...";
+        userData.scores[key]++; userData.lastScanTime = now; saveData();
+        resText.textContent = "正在讀取真相碎片";
         setTimeout(() => {
-          renderMain();
-          window.history.replaceState({}, document.title, window.location.pathname);
+          renderMain(); window.history.replaceState({}, document.title, window.location.pathname);
           if (userData.scores[key] >= MAX_POINTS) {
-            document.getElementById("resultText").textContent = "解鎖完成，權限轉移中...";
-            setTimeout(() => window.location.href = NEXT_URL, 1500);
+            resText.textContent = "解鎖完成...";
+            setTimeout(() => dialogueSystem.start(), 1000);
           }
         }, 800);
       }
@@ -327,7 +417,17 @@
     document.getElementById("resetCurrentBtn").onclick = () => { userData.scores[userData.selectedCharacter] = 0; saveData(); renderMain(); };
     document.getElementById("clearAllFromSelect").onclick = () => { if(confirm("確定要清除所有紀錄嗎？")) { localStorage.clear(); location.reload(); } };
 
-    window.onload = renderMain;
+    window.onload = function() {
+      if (!userData.selectedCharacter) {
+        typewriter("narrativeText", ["你不是第一個來到這裡的", "......", "而你也被看見了"], () => {
+          const overlay = document.getElementById("narrativeOverlay");
+          overlay.style.opacity = "0"; setTimeout(() => { overlay.style.display = "none"; renderMain(); }, 1500);
+        });
+      } else { 
+        document.getElementById("narrativeOverlay").style.display = "none"; 
+        renderMain(); 
+      }
+    };
   </script>
 </body>
 </html>
