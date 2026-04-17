@@ -231,6 +231,119 @@
     .dot.active { background: var(--rose); box-shadow: 0 0 15px var(--rose); }
 
     .page-bottom-spacer { height: 150px; pointer-events: none; }
+/* =========================
+   手機橫向：左右排版 + 保留少量上下滑動空間
+   ========================= */
+@media (orientation: landscape) and (max-width: 1024px) {
+  .main-wrap {
+    display: flex;
+    gap: 15px;
+    align-items: stretch;
+  }
+
+  .hero-panel,
+  .side-panel {
+    flex: 1;
+    margin: 0;
+  }
+
+  .hero-panel {
+    min-height: unset !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .side-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+}
+
+  .avatar-wrap {
+    width: 110px;
+    height: 185px;
+    margin-bottom: 10px;
+  }
+
+  #avatarTitle {
+    font-size: 20px !important;
+  }
+
+  #avatarName {
+    font-size: 13px !important;
+    margin: 6px 0 !important;
+    letter-spacing: 2px !important;
+  }
+
+  #avatarSub {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+    max-width: 280px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .telemetry-grid {
+    gap: 8px;
+    margin-top: 12px;
+    max-width: 100%;
+  }
+
+  .telemetry-card {
+    min-height: 62px;
+    padding: 10px;
+    font-size: 9px;
+  }
+
+  .telemetry-card strong {
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  #dots {
+    margin-top: 14px !important;
+    gap: 10px !important;
+  }
+
+  #resultText {
+    margin-top: 12px !important;
+    font-size: 12px !important;
+  }
+
+  .btn {
+    padding: 11px;
+    font-size: 12px;
+    border-radius: 14px;
+  }
+
+  .page-bottom-spacer {
+    height: 48px;
+  }
+}
+@media (orientation: landscape) and (max-width: 1024px) {
+
+  .main-wrap {
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+
+  .hero-panel,
+  .side-panel {
+    height: 100%;
+  }
+
+  .side-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .hero-panel {
+    min-height: unset !important;
+  }
+
+}
   </style>
 </head>
 <body>
@@ -292,7 +405,7 @@
     const STORAGE_KEY = "they-are-watching-v2";
     const MAX_POINTS = 3;
     const WAITING_MS = 3000;
-    const NEXT_URL = "https://example.com/next-page";
+    const NEXT_URL = "https://reina203.github.io/room2-webgl/";
 
     const CHARACTERS = {
       char1: { title: "失焦者", name: "NO.13", desc: "失焦於籠舍與視線之間", bg: "./NO.13&零號.gif" },
