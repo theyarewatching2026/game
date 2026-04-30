@@ -156,12 +156,7 @@
   gap: 15px; 
 }
 
-/* 手機橫向 → 左右 */
-@media (orientation: landscape) and (max-width: 1024px) {
-  .main-wrap {
-    grid-template-columns: 1fr 1fr;
-  }
-}
+
 
 /* 桌機 → 左右（原本保留） */
 @media (min-width: 1025px) {
@@ -236,14 +231,15 @@
    ========================= */
 @media (orientation: landscape) and (max-width: 1024px) {
   .main-wrap {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 15px;
     align-items: stretch;
   }
 
   .hero-panel,
   .side-panel {
-    flex: 1;
+    height: 100%;
     margin: 0;
   }
 
@@ -259,7 +255,6 @@
     flex-direction: column;
     justify-content: space-between;
   }
-}
 
   .avatar-wrap {
     width: 110px;
