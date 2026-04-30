@@ -405,7 +405,7 @@
     const STORAGE_KEY = "they-are-watching-v2";
     const MAX_POINTS = 3;
     const WAITING_MS = 3000;
-    constconst NEXT_URLS = {
+    const NEXT_URLS = {
   char1: "https://theyarewatchinggame.github.io/NO13-Zero/",
   char2: "https://theyarewatchinggame.github.io/KakaRoom/",
   char3: "https://reina203.github.io/room2-webgl/c98/",
@@ -460,7 +460,13 @@
       next: function() {
         this.current++;
         if (this.current < this.sentences.length) this.show();
-        else { document.getElementById("dialogueOverlay").style.opacity = "0"; setTimeout(() => window.location.href = NEXT_URL, 1500); }
+        else {
+  document.getElementById("dialogueOverlay").style.opacity = "0";
+  setTimeout(() => {
+    const key = userData.selectedCharacter;
+    window.location.href = NEXT_URLS[key];
+  }, 1500);
+}
       }
     };
 
